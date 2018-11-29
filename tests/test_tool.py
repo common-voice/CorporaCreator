@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from corporacreator.skeleton import fib
+from corporacreator.tool import fib
 
 __author__ = "kdavis-mozilla"
 __copyright__ = "kdavis-mozilla"
