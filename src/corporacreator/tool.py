@@ -2,6 +2,7 @@ import sys
 import logging
 import argparse
 
+from corporacreator import Creator
 from corporacreator import __version__
 
 __license__ = "mpl"
@@ -68,7 +69,8 @@ def main(args):
     args = parse_args(args)
     setup_logging(args.loglevel)
     _logger.info("Starting creation of corpora...")
-    # Creeate corpora
+    creator = Creator(args)
+    creator.create()
     _logger.info("Finished creation of corpora")
 
 
