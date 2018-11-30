@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from .corpora import Corpora
+from .logging import setup_logging
 from pkg_resources import get_distribution, DistributionNotFound
 
 try:

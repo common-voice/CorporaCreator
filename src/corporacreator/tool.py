@@ -4,6 +4,7 @@ import argparse
 
 from corporacreator import Corpora
 from corporacreator import __version__
+from corporacreator import setup_logging
 
 __license__ = "mpl"
 __author__ = "kdavis-mozilla"
@@ -48,16 +49,6 @@ def parse_args(args):
         help="Path to the Common Voice tsv for all languages",
         dest="tsvfile")
     return parser.parse_args(args)
-
-
-def setup_logging(loglevel):
-    """Setup basic logging
-
-    Args:
-      loglevel (int): minimum loglevel for emitting messages
-    """
-    logformat = "[%(asctime)s] %(levelname)s:%(name)s:%(message)s"
-    logging.basicConfig(level=loglevel, stream=sys.stdout, format=logformat, datefmt="%Y-%m-%d %H:%M:%S")
 
 
 def main(args):
