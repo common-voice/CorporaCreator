@@ -4,7 +4,7 @@ import argparse
 
 from corporacreator import __version__
 
-__license__ = "mit"
+__license__ = "mpl"
 __author__ = "kdavis-mozilla"
 __copyright__ = "kdavis-mozilla"
 _logger = logging.getLogger(__name__)

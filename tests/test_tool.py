@@ -5,4 +5,4 @@ import pytest
 
 __author__ = "kdavis-mozilla"
 __copyright__ = "kdavis-mozilla"
-__license__ = "mit"
+__license__ = "mpl"
