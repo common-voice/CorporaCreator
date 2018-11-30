@@ -7,11 +7,16 @@ __copyright__ = "kdavis-mozilla"
 _logger = logging.getLogger(__name__)
 
 
-class Creator():
+class Corpora():
     def __init__(self, args):
         self.args = args
 
     def create(self):
-        _logger.info("Creator creating corpora...")
+        _logger.debug("Creating corpora...")
         # Do it here....
-        _logger.info("Creator finished creating corpora...")
+        _logger.debug("Finished creating corpora.")
+
+    def save(self):
+        _logger.debug("Saving corpora...")
+        # Do it here....
+        _logger.debug("Finished saving corpora.")

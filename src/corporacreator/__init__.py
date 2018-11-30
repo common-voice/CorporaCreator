@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .corpora import Creator
+from .corpora import Corpora
 from pkg_resources import get_distribution, DistributionNotFound
 
 try:
