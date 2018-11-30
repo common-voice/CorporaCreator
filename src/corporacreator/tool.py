@@ -67,7 +67,7 @@ def main(args):
     """
     args = parse_args(args)
     setup_logging(args.loglevel)
-    _logger.debug("Starting creation of corpora...")
+    _logger.info("Starting creation of corpora...")
     # Creeate corpora
     _logger.info("Finished creation of corpora")
 
