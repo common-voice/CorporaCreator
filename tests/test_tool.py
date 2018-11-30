@@ -3,6 +3,6 @@
 
 import pytest
 
+__license__ = "mpl"
 __author__ = "kdavis-mozilla"
 __copyright__ = "kdavis-mozilla"
-__license__ = "mpl"
