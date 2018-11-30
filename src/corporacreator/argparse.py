@@ -3,10 +3,6 @@ import argparse
 
 from pkg_resources import get_distribution, DistributionNotFound
 
-__license__ = "mpl"
-__author__ = "kdavis-mozilla"
-__copyright__ = "kdavis-mozilla"
-_logger = logging.getLogger(__name__)
 
 try:
     # Change here if project is renamed and does not equal the package name

@@ -1,11 +1,8 @@
 import sys
 import logging
 
-__license__ = "mpl"
-__author__ = "kdavis-mozilla"
-__copyright__ = "kdavis-mozilla"
-_logger = logging.getLogger(__name__)
 
+_logger = logging.getLogger(__name__)
 
 class Corpora():
     def __init__(self, args):

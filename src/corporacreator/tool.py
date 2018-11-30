@@ -5,11 +5,8 @@ from corporacreator import Corpora
 from corporacreator import parse_args
 from corporacreator import setup_logging
 
-__license__ = "mpl"
-__author__ = "kdavis-mozilla"
-__copyright__ = "kdavis-mozilla"
-_logger = logging.getLogger(__name__)
 
+_logger = logging.getLogger(__name__)
 
 def main(args):
     """Main entry point allowing external calls

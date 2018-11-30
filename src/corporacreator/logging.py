@@ -1,11 +1,6 @@
 import sys
 import logging
 
-__license__ = "mpl"
-__author__ = "kdavis-mozilla"
-__copyright__ = "kdavis-mozilla"
-_logger = logging.getLogger(__name__)
-
 
 def setup_logging(loglevel):
     """Setup basic logging
