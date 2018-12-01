@@ -49,5 +49,5 @@ def parse_args(args):
         '--file',
         required=True,
         help="Path to the Common Voice tsv for all languages",
-        dest="tsvfile")
+        dest="tsvfilename")
     return parser.parse_args(args)

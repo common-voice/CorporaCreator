@@ -16,11 +16,13 @@ def main(args):
     """
     args = parse_args(args)
     setup_logging(args.loglevel)
-    _logger.info("Starting creation of corpora...")
+    _logger.info("Creating corpora...")
     corpora = Corpora(args)
     corpora.create()
+    _logger.info("Created corpora.")
+    _logger.info("Saving corpora...")
     corpora.save()
-    _logger.info("Finished creation of corpora.")
+    _logger.info("Saved corpora.")
 
 
 def run():
