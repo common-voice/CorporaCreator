@@ -1,7 +1,7 @@
 import sys
 import logging
 
-from numpy import genfromtxt
+import pandas as pd
 
 
 _logger = logging.getLogger(__name__)
@@ -18,11 +18,12 @@ class Corpora():
 
     def _parse_tsv(self):
         _logger.debug("Parsing tsv file...")
-        corporadata = genfromtxt(self.args.tsvfilename,
-            delimiter="\t",
-            dtype=None,
-            skip_header=1,
-            encoding="utf8")
+        corporadata = pd.read_csv(self.args.tsvfilename,
+            sep="\t",
+            parse_dates=False,
+            engine="python",
+            encoding="utf-8",
+            error_bad_lines=False)
         _logger.debug("Parsed tsv file.")
         return corporadata
 
