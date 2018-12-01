@@ -1,7 +1,8 @@
-import sys
 import logging
 
 import pandas as pd
+
+from corporacreator import Corpus
 
 
 _logger = logging.getLogger(__name__)
@@ -9,11 +10,20 @@ _logger = logging.getLogger(__name__)
 class Corpora():
     def __init__(self, args):
         self.args = args
+        self.corpora = []
 
     def create(self):
         _logger.debug("Creating corpora...")
         corporadata = self._parse_tsv()
-        # Do it here....
+        for locale in corporadata.locale.unique():
+            _logger.debug("Selecting %s corpus data..." % locale)
+            corpusdata = corporadata.loc[lambda df: df.locale == locale, corporadata.columns != locale]
+            _logger.debug("Selected %s corpus data." % locale)
+            _logger.debug("Creating %s corpus..." % locale)
+            corpus = Corpus(locale, corpusdata)
+            corpus.create()
+            _logger.debug("Created %s corpus." % locale)
+            self.corpora.append(corpus)
         _logger.debug("Created corpora.")
 
     def _parse_tsv(self):
@@ -29,5 +39,8 @@ class Corpora():
 
     def save(self):
         _logger.debug("Saving corpora...")
-        # Do it here....
+        for corpus in self.corpora:
+            _logger.debug("Saving %s corpus..." % corpus.locale)
+            corpus.save()
+            _logger.debug("Saved %s corpus." % corpus.locale)
         _logger.debug("Saved corpora.")
