@@ -8,7 +8,8 @@ from corporacreator import Corpus
 
 _logger = logging.getLogger(__name__)
 
-class Corpora():
+
+class Corpora:
     def __init__(self, args):
         self.args = args
         self.corpora = []
@@ -18,7 +19,18 @@ class Corpora():
         corpora_data = self._parse_tsv()
         for locale in corpora_data.locale.unique():
             _logger.debug("Selecting %s corpus data..." % locale)
-            corpus_data = corpora_data.loc[lambda df: df.locale == locale, ["path", "sentence", "up_votes", "down_votes", "age", "gender", "accent"]]
+            corpus_data = corpora_data.loc[
+                lambda df: df.locale == locale,
+                [
+                    "path",
+                    "sentence",
+                    "up_votes",
+                    "down_votes",
+                    "age",
+                    "gender",
+                    "accent",
+                ],
+            ]
             _logger.debug("Selected %s corpus data." % locale)
             _logger.debug("Creating %s corpus..." % locale)
             corpus = Corpus(locale, corpus_data)
@@ -29,12 +41,14 @@ class Corpora():
 
     def _parse_tsv(self):
         _logger.debug("Parsing tsv file...")
-        corpora_data = pd.read_csv(self.args.tsv_filename,
+        corpora_data = pd.read_csv(
+            self.args.tsv_filename,
             sep="\t",
             parse_dates=False,
             engine="python",
             encoding="utf-8",
-            error_bad_lines=False)
+            error_bad_lines=False,
+        )
         _logger.debug("Parsed tsv file.")
         return corpora_data
 
