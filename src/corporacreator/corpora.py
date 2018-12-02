@@ -16,10 +16,10 @@ class Corpora:
         self.corpora = []
 
     def create(self):
-        _logger.debug("Creating corpora...")
+        _logger.info("Creating corpora...")
         corpora_data = self._parse_tsv()
         for locale in corpora_data.locale.unique():
-            _logger.debug("Selecting %s corpus data..." % locale)
+            _logger.info("Selecting %s corpus data..." % locale)
             corpus_data = corpora_data.loc[
                 lambda df: df.locale == locale,
                 [
@@ -32,16 +32,16 @@ class Corpora:
                     "accent",
                 ],
             ]
-            _logger.debug("Selected %s corpus data." % locale)
-            _logger.debug("Creating %s corpus..." % locale)
+            _logger.info("Selected %s corpus data." % locale)
+            _logger.info("Creating %s corpus..." % locale)
             corpus = Corpus(locale, corpus_data)
             corpus.create()
-            _logger.debug("Created %s corpus." % locale)
+            _logger.info("Created %s corpus." % locale)
             self.corpora.append(corpus)
-        _logger.debug("Created corpora.")
+        _logger.info("Created corpora.")
 
     def _parse_tsv(self):
-        _logger.debug("Parsing tsv file...")
+        _logger.info("Parsing tsv file...")
         corpora_data = pd.read_csv(
             self.args.tsv_filename,
             sep="\t",
@@ -52,15 +52,15 @@ class Corpora:
             quotechar='"',
             quoting=csv.QUOTE_NONE,
         )
-        _logger.debug("Parsed tsv file.")
+        _logger.info("Parsed %d lines tsv file." % len(corpora_data))
         return corpora_data
 
     def save(self, directory):
         if not os.path.exists(directory):
             os.mkdir(directory)
-        _logger.debug("Saving corpora...")
+        _logger.info("Saving corpora...")
         for corpus in self.corpora:
-            _logger.debug("Saving %s corpus..." % corpus.locale)
+            _logger.info("Saving %s corpus..." % corpus.locale)
             corpus.save(directory)
-            _logger.debug("Saved %s corpus." % corpus.locale)
-        _logger.debug("Saved corpora.")
+            _logger.info("Saved %s corpus." % corpus.locale)
+        _logger.info("Saved corpora.")
