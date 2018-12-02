@@ -1,4 +1,5 @@
 import os
+import csv
 import logging
 
 import pandas as pd
@@ -48,6 +49,8 @@ class Corpora:
             engine="python",
             encoding="utf-8",
             error_bad_lines=False,
+            quotechar='"',
+            quoting=csv.QUOTE_NONE,
         )
         _logger.debug("Parsed tsv file.")
         return corpora_data
