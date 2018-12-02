@@ -6,9 +6,9 @@ import pandas as pd
 _logger = logging.getLogger(__name__)
 
 class Corpus():
-    def __init__(self, locale, corpusdata):
+    def __init__(self, locale, corpus_data):
         self.locale = locale
-        self.corpusdata = corpusdata
+        self.corpus_data = corpus_data
 
     def create(self):
         _logger.debug("Creating %s corpus..." % self.locale)

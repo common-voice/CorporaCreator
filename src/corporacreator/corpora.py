@@ -14,13 +14,13 @@ class Corpora():
 
     def create(self):
         _logger.debug("Creating corpora...")
-        corporadata = self._parse_tsv()
-        for locale in corporadata.locale.unique():
+        corpora_data = self._parse_tsv()
+        for locale in corpora_data.locale.unique():
             _logger.debug("Selecting %s corpus data..." % locale)
-            corpusdata = corporadata.loc[lambda df: df.locale == locale, corporadata.columns != locale]
+            corpus_data = corpora_data.loc[lambda df: df.locale == locale, corpora_data.columns != locale]
             _logger.debug("Selected %s corpus data." % locale)
             _logger.debug("Creating %s corpus..." % locale)
-            corpus = Corpus(locale, corpusdata)
+            corpus = Corpus(locale, corpus_data)
             corpus.create()
             _logger.debug("Created %s corpus." % locale)
             self.corpora.append(corpus)
@@ -28,14 +28,14 @@ class Corpora():
 
     def _parse_tsv(self):
         _logger.debug("Parsing tsv file...")
-        corporadata = pd.read_csv(self.args.tsvfilename,
+        corpora_data = pd.read_csv(self.args.tsv_filename,
             sep="\t",
             parse_dates=False,
             engine="python",
             encoding="utf-8",
             error_bad_lines=False)
         _logger.debug("Parsed tsv file.")
-        return corporadata
+        return corpora_data
 
     def save(self):
         _logger.debug("Saving corpora...")
