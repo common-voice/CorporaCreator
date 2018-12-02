@@ -1,3 +1,4 @@
+import os
 import logging
 
 import pandas as pd
@@ -17,7 +18,7 @@ class Corpora():
         corpora_data = self._parse_tsv()
         for locale in corpora_data.locale.unique():
             _logger.debug("Selecting %s corpus data..." % locale)
-            corpus_data = corpora_data.loc[lambda df: df.locale == locale, corpora_data.columns != locale]
+            corpus_data = corpora_data.loc[lambda df: df.locale == locale, ["path", "sentence", "up_votes", "down_votes", "age", "gender", "accent"]]
             _logger.debug("Selected %s corpus data." % locale)
             _logger.debug("Creating %s corpus..." % locale)
             corpus = Corpus(locale, corpus_data)
@@ -37,10 +38,12 @@ class Corpora():
         _logger.debug("Parsed tsv file.")
         return corpora_data
 
-    def save(self):
+    def save(self, directory):
+        if not os.path.exists(directory):
+            os.mkdir(directory)
         _logger.debug("Saving corpora...")
         for corpus in self.corpora:
             _logger.debug("Saving %s corpus..." % corpus.locale)
-            corpus.save()
+            corpus.save(directory)
             _logger.debug("Saved %s corpus." % corpus.locale)
         _logger.debug("Saved corpora.")

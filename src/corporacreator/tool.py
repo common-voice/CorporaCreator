@@ -21,7 +21,7 @@ def main(args):
     corpora.create()
     _logger.info("Created corpora.")
     _logger.info("Saving corpora...")
-    corpora.save()
+    corpora.save(args.directory)
     _logger.info("Saved corpora.")
 
 

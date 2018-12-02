@@ -50,4 +50,10 @@ def parse_args(args):
         required=True,
         help="Path to the Common Voice tsv for all languages",
         dest="tsv_filename")
+    parser.add_argument(
+        '-d',
+        '--directory',
+        required=True,
+        help="Directory in which to save the Common Voice corpora",
+        dest="directory")
     return parser.parse_args(args)
