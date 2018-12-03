@@ -14,9 +14,13 @@ class Corpus:
 
     def create(self):
         _logger.debug("Creating %s corpus..." % self.locale)
+        self._pre_process_corpus_data()
         self._partition_corpus_data()
         # Do it here....
         _logger.debug("Created %s corpora." % self.locale)
+
+    def _pre_process_corpus_data(self):
+        self.corpus_data["user_id"] = self.corpus_data["path"].str.split("/", expand=True)[0]
 
     def _partition_corpus_data(self):
         self.other = self.corpus_data.loc[
