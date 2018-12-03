@@ -16,6 +16,7 @@ class Corpus:
         _logger.debug("Creating %s corpus..." % self.locale)
         self._pre_process_corpus_data()
         self._partition_corpus_data()
+        self._post_process_valid_data()
         # Do it here....
         _logger.debug("Created %s corpora." % self.locale)
 
@@ -38,12 +39,19 @@ class Corpus:
             :,
         ]
 
+    def _post_process_valid_data(self):
+        speaker_counts = self.valid["user_id"].value_counts()
+        speaker_counts = speaker_counts.to_frame().reset_index()
+        speaker_counts.columns= ["user_id", "user_sentence_count"]
+        self.valid = self.valid.join(speaker_counts.set_index("user_id"), on="user_id")
+
     def save(self, directory):
         directory = os.path.join(directory, self.locale)
         if not os.path.exists(directory):
             os.mkdir(directory)
         other_path = os.path.join(directory, "other.tsv")
         invalid_path = os.path.join(directory, "invalid.tsv")
+        valid_path = os.path.join(directory, "valid.tsv")
 
         _logger.debug("Saving %s corpora..." % self.locale)
         self.other.to_csv(
@@ -56,6 +64,14 @@ class Corpus:
         )
         self.invalid.to_csv(
             invalid_path,
+            sep="\t",
+            header=True,
+            index=False,
+            encoding="utf-8",
+            escapechar='"',
+        )
+        self.valid.to_csv(
+            valid_path,
             sep="\t",
             header=True,
             index=False,
