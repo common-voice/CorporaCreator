@@ -14,8 +14,14 @@ class Corpus:
 
     def create(self):
         _logger.debug("Creating %s corpus..." % self.locale)
+        self._partition_corpus_data()
+        # Do it here....
+        _logger.debug("Created %s corpora." % self.locale)
+
+    def _partition_corpus_data(self):
         self.other = self.corpus_data.loc[
-            lambda df: (df.up_votes + df.down_votes) <= 1, :
+            lambda df: (df.up_votes + df.down_votes) <= 1,
+            :,
         ]
         self.valid = self.corpus_data.loc[
             lambda df: (df.up_votes + df.down_votes > 1)
@@ -27,8 +33,6 @@ class Corpus:
             & (df.up_votes <= df.down_votes),
             :,
         ]
-        # Do it here....
-        _logger.debug("Created %s corpora." % self.locale)
 
     def save(self, directory):
         directory = os.path.join(directory, self.locale)
