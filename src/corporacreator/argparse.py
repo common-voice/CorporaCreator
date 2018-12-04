@@ -13,6 +13,15 @@ except DistributionNotFound:
 finally:
     del get_distribution, DistributionNotFound
 
+def _check_positive(value):
+    try:
+        ivalue = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError("'%s' is not an  int value" % value)
+    if ivalue <= 0:
+        raise argparse.ArgumentTypeError("%s is an invalid positive int value" % value)
+    return ivalue
+
 
 def parse_args(args):
     """Parse command line parameters
@@ -62,5 +71,14 @@ def parse_args(args):
         required=True,
         help="Directory in which to save the Common Voice corpora",
         dest="directory",
+    )
+    parser.add_argument(
+        "-s",
+        "--duplicate-sentence-count",
+        default=1,
+        required=False,
+        type=_check_positive,
+        help="Maximum number of times a sentence can appear in a corpus.",
+        dest="duplicate_sentence_count",
     )
     return parser.parse_args(args)
