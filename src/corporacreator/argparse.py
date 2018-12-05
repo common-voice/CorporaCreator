@@ -13,6 +13,7 @@ except DistributionNotFound:
 finally:
     del get_distribution, DistributionNotFound
 
+
 def _check_positive(value):
     try:
         ivalue = int(value)

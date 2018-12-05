@@ -21,12 +21,13 @@ class Corpus:
         _logger.debug("Created %s corpora." % self.locale)
 
     def _pre_process_corpus_data(self):
-        self.corpus_data["user_id"] = self.corpus_data["path"].str.split("/", expand=True)[0]
+        self.corpus_data["user_id"] = self.corpus_data["path"].str.split(
+            "/", expand=True
+        )[0]
 
     def _partition_corpus_data(self):
         self.other = self.corpus_data.loc[
-            lambda df: (df.up_votes + df.down_votes) <= 1,
-            :,
+            lambda df: (df.up_votes + df.down_votes) <= 1, :
         ]
         self.valid = self.corpus_data.loc[
             lambda df: (df.up_votes + df.down_votes > 1)
@@ -42,7 +43,7 @@ class Corpus:
     def _post_process_valid_data(self):
         speaker_counts = self.valid["user_id"].value_counts()
         speaker_counts = speaker_counts.to_frame().reset_index()
-        speaker_counts.columns= ["user_id", "user_sentence_count"]
+        speaker_counts.columns = ["user_id", "user_sentence_count"]
         self.valid = self.valid.join(speaker_counts.set_index("user_id"), on="user_id")
 
     def save(self, directory):
