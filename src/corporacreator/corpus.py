@@ -27,7 +27,7 @@ class Corpus:
             "/", expand=True
         )[0] # TODO: Remove this line when the Gregor modifies the csv output to include user_id
         preprocessor = getattr(preprocessors, self.locale.replace("-","")) # Get locale specific preprocessor
-        self.corpus_data = preprocessor(self.corpus_data)
+        self.corpus_data["sentence"] = self.corpus_data["sentence"].apply(func=preprocessor)
 
     def _partition_corpus_data(self):
         self.other = self.corpus_data.loc[
