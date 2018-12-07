@@ -23,11 +23,11 @@ class Corpus:
         _logger.debug("Created %s corpora." % self.locale)
 
     def _pre_process_corpus_data(self):
-        preprocessor = getattr(preprocessors, self.locale.replace("-","")) # Get locale specific preprocessor
-        self.corpus_data = preprocessor(self.corpus_data)
         self.corpus_data["user_id"] = self.corpus_data["path"].str.split(
             "/", expand=True
         )[0] # TODO: Remove this line when the Gregor modifies the csv output to include user_id
+        preprocessor = getattr(preprocessors, self.locale.replace("-","")) # Get locale specific preprocessor
+        self.corpus_data = preprocessor(self.corpus_data)
 
     def _partition_corpus_data(self):
         self.other = self.corpus_data.loc[
