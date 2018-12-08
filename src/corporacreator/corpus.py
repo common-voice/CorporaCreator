@@ -46,6 +46,7 @@ class Corpus:
         ]
 
     def _post_process_valid_data(self):
+        self.valid = self.valid.groupby("sentence").head(self.args.duplicate_sentence_count)
         return
 
     def save(self, directory):
