@@ -46,10 +46,7 @@ class Corpus:
         ]
 
     def _post_process_valid_data(self):
-        speaker_counts = self.valid["user_id"].value_counts()
-        speaker_counts = speaker_counts.to_frame().reset_index()
-        speaker_counts.columns = ["user_id", "user_sentence_count"]
-        self.valid = self.valid.join(speaker_counts.set_index("user_id"), on="user_id")
+        return
 
     def save(self, directory):
         directory = os.path.join(directory, self.locale)
