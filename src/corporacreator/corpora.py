@@ -34,7 +34,7 @@ class Corpora:
             ]
             _logger.info("Selected %s corpus data." % locale)
             _logger.info("Creating %s corpus..." % locale)
-            corpus = Corpus(locale, corpus_data)
+            corpus = Corpus(self.args, locale, corpus_data)
             corpus.create()
             _logger.info("Created %s corpus." % locale)
             self.corpora.append(corpus)

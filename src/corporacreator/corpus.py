@@ -10,7 +10,8 @@ _logger = logging.getLogger(__name__)
 
 
 class Corpus:
-    def __init__(self, locale, corpus_data):
+    def __init__(self, args, locale, corpus_data):
+        self.args = args
         self.locale = locale
         self.corpus_data = corpus_data
 
