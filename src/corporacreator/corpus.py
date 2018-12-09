@@ -1,13 +1,13 @@
 import os
 import logging
 
+import corporacreator
 import corporacreator.preprocessors as preprocessors
 
 import pandas as pd
 
 
 _logger = logging.getLogger(__name__)
-
 
 class Corpus:
     def __init__(self, args, locale, corpus_data):
@@ -51,10 +51,26 @@ class Corpus:
         speaker_counts = speaker_counts.to_frame().reset_index()
         speaker_counts.columns = ["user_id", "user_sentence_count"]
         self.valid = self.valid.join(speaker_counts.set_index("user_id"), on="user_id")
-        self.valid = self.valid.sort_values("user_sentence_count")
-        self.valid = self.valid.groupby("sentence").head(self.args.duplicate_sentence_count)
+        self.valid = self.valid.sort_values(["user_sentence_count", "user_id"])
+        valid = self.valid.groupby("sentence").head(self.args.duplicate_sentence_count)
+        valid = valid.drop(columns="user_sentence_count")
         self.valid = self.valid.drop(columns="user_sentence_count")
-        return
+        # Determine train, dev, and test sizes
+        train_size, dev_size, test_size = self._calculate_data_set_sizes(len(valid))
+        # Determine train, dev, and test split
+        self.train = valid.iloc[0:train_size]
+        self.dev = valid.iloc[train_size:train_size + dev_size]
+        self.test = valid.iloc[train_size + dev_size:train_size + dev_size + test_size]
+        # TODO: Make sure users are in train, dev, xor test
+
+    def _calculate_data_set_sizes(self, total_size):
+        for train_size  in range(total_size, 0, -1):
+            calculated_sample_size = int(corporacreator.sample_size(train_size))
+            if 2 * calculated_sample_size + train_size <= total_size:
+                dev_size = calculated_sample_size
+                test_size = calculated_sample_size
+                break
+        return train_size, dev_size, test_size
 
     def save(self, directory):
         directory = os.path.join(directory, self.locale)
@@ -63,6 +79,9 @@ class Corpus:
         other_path = os.path.join(directory, "other.tsv")
         invalid_path = os.path.join(directory, "invalid.tsv")
         valid_path = os.path.join(directory, "valid.tsv")
+        train_path = os.path.join(directory, "train.tsv")
+        dev_path = os.path.join(directory, "dev.tsv")
+        test_path = os.path.join(directory, "test.tsv")
 
         _logger.debug("Saving %s corpora..." % self.locale)
         self.other.to_csv(
@@ -83,6 +102,30 @@ class Corpus:
         )
         self.valid.to_csv(
             valid_path,
+            sep="\t",
+            header=True,
+            index=False,
+            encoding="utf-8",
+            escapechar='"',
+        )
+        self.train.to_csv(
+            train_path,
+            sep="\t",
+            header=True,
+            index=False,
+            encoding="utf-8",
+            escapechar='"',
+        )
+        self.dev.to_csv(
+            dev_path,
+            sep="\t",
+            header=True,
+            index=False,
+            encoding="utf-8",
+            escapechar='"',
+        )
+        self.test.to_csv(
+            test_path,
             sep="\t",
             header=True,
             index=False,
