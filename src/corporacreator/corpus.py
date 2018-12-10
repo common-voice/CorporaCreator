@@ -66,6 +66,7 @@ class Corpus:
         self.valid = self.valid.join(speaker_counts.set_index("user_id"), on="user_id")
         self.valid = self.valid.sort_values(["user_sentence_count", "user_id"])
         valid = self.valid.groupby("sentence").head(self.args.duplicate_sentence_count)
+        valid = valid.sort_values(["user_sentence_count", "user_id"], ascending=False)
         valid = valid.drop(columns="user_sentence_count")
         self.valid = self.valid.drop(columns="user_sentence_count")
         # Determine train, dev, and test sizes
