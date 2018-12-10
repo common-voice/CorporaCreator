@@ -46,7 +46,7 @@ class Corpus:
         ]
 
     def _post_process_valid_data(self):
-        # Remove duplicate sentences while maintaining maximal user diversity (TODO: Make addition of user_sentence_count cleaner)
+        # Remove duplicate sentences while maintaining maximal user diversity at the frame's start (TODO: Make addition of user_sentence_count cleaner)
         speaker_counts = self.valid["user_id"].value_counts()
         speaker_counts = speaker_counts.to_frame().reset_index()
         speaker_counts.columns = ["user_id", "user_sentence_count"]
@@ -57,7 +57,7 @@ class Corpus:
         self.valid = self.valid.drop(columns="user_sentence_count")
         # Determine train, dev, and test sizes
         train_size, dev_size, test_size = self._calculate_data_set_sizes(len(valid))
-        # Determine train, dev, and test split
+        # Split into train, dev, and test datasets
         self.train = valid.iloc[0:train_size]
         self.dev = valid.iloc[train_size:train_size + dev_size]
         self.test = valid.iloc[train_size + dev_size:train_size + dev_size + test_size]
