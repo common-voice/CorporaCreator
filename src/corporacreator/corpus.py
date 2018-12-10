@@ -64,6 +64,7 @@ class Corpus:
         # TODO: Make sure users are in train, dev, xor test
 
     def _calculate_data_set_sizes(self, total_size):
+        # Find maximum size for the training data set in accord with sample theory
         for train_size  in range(total_size, 0, -1):
             calculated_sample_size = int(corporacreator.sample_size(train_size))
             if 2 * calculated_sample_size + train_size <= total_size:
