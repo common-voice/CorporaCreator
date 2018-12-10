@@ -1,5 +1,3 @@
-import pandas as pd
-
 def zhTW(sentence):
     """Cleans up the passed sentence, removing or reformatting invalid data.
 

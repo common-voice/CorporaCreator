@@ -1,5 +1,3 @@
-import pandas as pd
-
 def cv(sentence):
     """Cleans up the passed sentence, removing or reformatting invalid data.
 

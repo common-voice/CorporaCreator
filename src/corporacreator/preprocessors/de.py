@@ -1,5 +1,3 @@
-import pandas as pd
-
 def de(sentence):
     """Cleans up the passed sentence, removing or reformatting invalid data.
 
