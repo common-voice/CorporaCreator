@@ -76,61 +76,21 @@ class Corpus:
         directory = os.path.join(directory, self.locale)
         if not os.path.exists(directory):
             os.mkdir(directory)
-        other_path = os.path.join(directory, "other.tsv")
-        invalid_path = os.path.join(directory, "invalid.tsv")
-        valid_path = os.path.join(directory, "valid.tsv")
-        train_path = os.path.join(directory, "train.tsv")
-        dev_path = os.path.join(directory, "dev.tsv")
-        test_path = os.path.join(directory, "test.tsv")
+        datasets = ["other", "invalid", "valid", "train", "dev", "test"]
 
         _logger.debug("Saving %s corpora..." % self.locale)
-        self.other.to_csv(
-            other_path,
-            sep="\t",
-            header=True,
-            index=False,
-            encoding="utf-8",
-            escapechar='"',
-        )
-        self.invalid.to_csv(
-            invalid_path,
-            sep="\t",
-            header=True,
-            index=False,
-            encoding="utf-8",
-            escapechar='"',
-        )
-        self.valid.to_csv(
-            valid_path,
-            sep="\t",
-            header=True,
-            index=False,
-            encoding="utf-8",
-            escapechar='"',
-        )
-        self.train.to_csv(
-            train_path,
-            sep="\t",
-            header=True,
-            index=False,
-            encoding="utf-8",
-            escapechar='"',
-        )
-        self.dev.to_csv(
-            dev_path,
-            sep="\t",
-            header=True,
-            index=False,
-            encoding="utf-8",
-            escapechar='"',
-        )
-        self.test.to_csv(
-            test_path,
-            sep="\t",
-            header=True,
-            index=False,
-            encoding="utf-8",
-            escapechar='"',
-        )
-        # Do it here....
+        for dataset in datasets:
+            self._save(directory, dataset)
         _logger.debug("Saved %s corpora." % self.locale)
+
+    def _save(self, directory, dataset):
+        path = os.path.join(directory, dataset + ".tsv")
+        dataframe = getattr(self, dataset)
+        dataframe.to_csv(
+            path,
+            sep="\t",
+            header=True,
+            index=False,
+            encoding="utf-8",
+            escapechar='"',
+        )
