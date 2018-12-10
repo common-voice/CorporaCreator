@@ -1,5 +1,13 @@
 import pandas as pd
 
-def fr(corpus_data):
+def fr(sentence):
+    """Cleans up the passed sentence, removing or reformatting invalid data.
+
+    Args:
+      sentence (str): Sentence to be cleaned up.
+
+    Returns:
+      (str): Cleaned up sentence.
+    """
     # TODO: Clean up fr data
-    return corpus_data
+    return sentence

@@ -11,11 +11,22 @@ _logger = logging.getLogger(__name__)
 
 
 class Corpora:
+    """Corpora representing all Common Voice datasets.
+
+    Args:
+      args ([str]): Command line parameters as list of strings
+
+    Attributes:
+        args ([str]): command line parameters as list of strings
+        corpora ([:class:`corporacreator.Corpus`]): List of :class:`corporacreator.Corpus` instances
+    """
     def __init__(self, args):
         self.args = args
         self.corpora = []
 
     def create(self):
+        """Creates a :class:`corporacreator.Corpus` for each locale.
+        """
         _logger.info("Creating corpora...")
         corpora_data = self._parse_tsv()
         for locale in corpora_data.locale.unique():
@@ -56,6 +67,11 @@ class Corpora:
         return corpora_data
 
     def save(self, directory):
+        """Saves this :class:`corporacreator.Corpora` in `directory`.
+
+        Args:
+          directory (str): Directory into which this `corporacreator.Corpora` is saved.
+        """
         if not os.path.exists(directory):
             os.mkdir(directory)
         _logger.info("Saving corpora...")

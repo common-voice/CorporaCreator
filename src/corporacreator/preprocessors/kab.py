@@ -1,5 +1,13 @@
 import pandas as pd
 
-def kab(corpus_data):
+def kab(sentence):
+    """Cleans up the passed sentence, removing or reformatting invalid data.
+
+    Args:
+      sentence (str): Sentence to be cleaned up.
+
+    Returns:
+      (str): Cleaned up sentence.
+    """
     # TODO: Clean up kab data
-    return corpus_data
+    return sentence

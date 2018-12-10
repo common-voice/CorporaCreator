@@ -10,17 +10,30 @@ import pandas as pd
 _logger = logging.getLogger(__name__)
 
 class Corpus:
+    """Corpus representing a Common Voice datasets for a given locale.
+
+    Args:
+      args ([str]): Command line parameters as list of strings
+      locale (str): Locale this :class:`corporacreator.Corpus` represents
+      corpus_data (:class:`pandas.DataFrame`): `pandas.DataFrame` Containing the corpus data
+
+    Attributes:
+        args ([str]): Command line parameters as list of strings
+        locale (str): Locale of this :class:`corporacreator.Corpus` 
+        corpus_data (:class:`pandas.DataFrame`): `pandas.DataFrame` Containing the corpus data
+    """
     def __init__(self, args, locale, corpus_data):
         self.args = args
         self.locale = locale
         self.corpus_data = corpus_data
 
     def create(self):
+        """Creates a :class:`corporacreator.Corpus` for `self.locale`.
+        """
         _logger.debug("Creating %s corpus..." % self.locale)
         self._pre_process_corpus_data()
         self._partition_corpus_data()
         self._post_process_valid_data()
-        # Do it here....
         _logger.debug("Created %s corpora." % self.locale)
 
     def _pre_process_corpus_data(self):
@@ -74,6 +87,11 @@ class Corpus:
         return train_size, dev_size, test_size
 
     def save(self, directory):
+        """Saves this :class:`corporacreator.Corpus` in `directory`.
+
+        Args:
+          directory (str): Directory into which this `corporacreator.Corpus` is saved.
+        """
         directory = os.path.join(directory, self.locale)
         if not os.path.exists(directory):
             os.mkdir(directory)
