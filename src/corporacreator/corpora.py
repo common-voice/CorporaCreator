@@ -5,6 +5,7 @@ import logging
 import pandas as pd
 
 from corporacreator import Corpus
+from corporacreator.preprocessors import common
 
 
 _logger = logging.getLogger(__name__)
@@ -29,6 +30,7 @@ class Corpora:
         """
         _logger.info("Creating corpora...")
         corpora_data = self._parse_tsv()
+        corpora_data["sentence"] = corpora_data["sentence"].apply(func=common)
         for locale in corpora_data.locale.unique():
             _logger.info("Selecting %s corpus data..." % locale)
             corpus_data = corpora_data.loc[
