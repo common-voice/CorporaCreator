@@ -1,7 +1,8 @@
-def gaIE(sentence):
+def gaIE(user_id, sentence):
     """Cleans up the passed sentence, removing or reformatting invalid data.
 
     Args:
+      user_id (str): User ID of sentence's speaker
       sentence (str): Sentence to be cleaned up.
 
     Returns:
