@@ -36,6 +36,7 @@ class Corpora:
             corpus_data = corpora_data.loc[
                 lambda df: df.locale == locale,
                 [
+                    "client_id",
                     "path",
                     "sentence",
                     "up_votes",

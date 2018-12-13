@@ -37,11 +37,8 @@ class Corpus:
         _logger.debug("Created %s corpora." % self.locale)
 
     def _pre_process_corpus_data(self):
-        self.corpus_data["user_id"] = self.corpus_data["path"].str.split(
-            "/", expand=True
-        )[0] # TODO: Remove this line when the Gregor modifies the csv output to include user_id
         preprocessor = getattr(preprocessors, self.locale.replace("-","")) # Get locale specific preprocessor
-        self.corpus_data["sentence"] = self.corpus_data[["user_id", "sentence"]].apply(func=lambda arg: preprocessor(*arg), axis=1)
+        self.corpus_data["sentence"] = self.corpus_data[["client_id", "sentence"]].apply(func=lambda arg: preprocessor(*arg), axis=1)
 
     def _partition_corpus_data(self):
         self.other = self.corpus_data.loc[
@@ -60,13 +57,13 @@ class Corpus:
 
     def _post_process_valid_data(self):
         # Remove duplicate sentences while maintaining maximal user diversity at the frame's start (TODO: Make addition of user_sentence_count cleaner)
-        speaker_counts = self.valid["user_id"].value_counts()
+        speaker_counts = self.valid["client_id"].value_counts()
         speaker_counts = speaker_counts.to_frame().reset_index()
-        speaker_counts.columns = ["user_id", "user_sentence_count"]
-        self.valid = self.valid.join(speaker_counts.set_index("user_id"), on="user_id")
-        self.valid = self.valid.sort_values(["user_sentence_count", "user_id"])
+        speaker_counts.columns = ["client_id", "user_sentence_count"]
+        self.valid = self.valid.join(speaker_counts.set_index("client_id"), on="client_id")
+        self.valid = self.valid.sort_values(["user_sentence_count", "client_id"])
         valid = self.valid.groupby("sentence").head(self.args.duplicate_sentence_count)
-        valid = valid.sort_values(["user_sentence_count", "user_id"], ascending=False)
+        valid = valid.sort_values(["user_sentence_count", "client_id"], ascending=False)
         valid = valid.drop(columns="user_sentence_count")
         self.valid = self.valid.drop(columns="user_sentence_count")
         # Determine train, dev, and test sizes
