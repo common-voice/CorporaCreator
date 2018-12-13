@@ -1,8 +1,8 @@
-def de(user_id, sentence):
+def de(client_id, sentence):
     """Cleans up the passed sentence, removing or reformatting invalid data.
 
     Args:
-      user_id (str): User ID of sentence's speaker
+      client_id (str): Client ID of sentence's speaker
       sentence (str): Sentence to be cleaned up.
 
     Returns:
