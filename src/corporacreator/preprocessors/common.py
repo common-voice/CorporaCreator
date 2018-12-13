@@ -1,3 +1,4 @@
+from urllib.parse import unquote
 from html.parser import HTMLParser
 
 class _HTMLStripper(HTMLParser):
@@ -43,6 +44,9 @@ def common(sentence):
     Returns:
       (str): Cleaned up sentence.
     """
+
+    # Decode any URL encoded elements of sentence
+    sentence = unquote(sentence)
     # Remove any HTML tags
     sentence = _strip_tags(sentence)
     # TODO: Clean up data in a language independent manner
