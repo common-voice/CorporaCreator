@@ -44,7 +44,7 @@ class Corpus:
     def _preprocessor_wrapper(self, client_id, sentence, up_votes, down_votes):
         preprocessor = getattr(preprocessors, self.locale.replace("-","")) # Get locale specific preprocessor
         sentence = preprocessor(client_id, sentence)
-        if not sentence.strip():
+        if None == sentence or not sentence.strip():
             up_votes = 0
             down_votes = 2
         return pd.Series([sentence, up_votes, down_votes])
