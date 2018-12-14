@@ -13,7 +13,7 @@ _logger = logging.getLogger(__name__)
 
 def common_wrapper(sentence, up_votes, down_votes):
     sentence = common(sentence)
-    if not sentence.strip():
+    if None == sentence or not sentence.strip():
         up_votes = 0
         down_votes = 2
     return pd.Series([sentence, up_votes, down_votes])
