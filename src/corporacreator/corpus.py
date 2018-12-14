@@ -37,8 +37,17 @@ class Corpus:
         _logger.debug("Created %s corpora." % self.locale)
 
     def _pre_process_corpus_data(self):
+        self.corpus_data[["sentence", "up_votes", "down_votes"]] = self.corpus_data[
+            ["client_id", "sentence", "up_votes", "down_votes"]
+        ].apply(func=lambda arg: self._preprocessor_wrapper(*arg), axis=1)
+
+    def _preprocessor_wrapper(self, client_id, sentence, up_votes, down_votes):
         preprocessor = getattr(preprocessors, self.locale.replace("-","")) # Get locale specific preprocessor
-        self.corpus_data["sentence"] = self.corpus_data[["client_id", "sentence"]].apply(func=lambda arg: preprocessor(*arg), axis=1)
+        sentence = preprocessor(client_id, sentence)
+        if None == sentence or not sentence.strip():
+            up_votes = 0
+            down_votes = 2
+        return pd.Series([sentence, up_votes, down_votes])
 
     def _partition_corpus_data(self):
         self.other = self.corpus_data.loc[
