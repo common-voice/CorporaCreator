@@ -11,6 +11,14 @@ from corporacreator.preprocessors import common
 _logger = logging.getLogger(__name__)
 
 
+def common_wrapper(sentence, up_votes, down_votes):
+    sentence = common(sentence)
+    if None == sentence or not sentence.strip():
+        up_votes = 0
+        down_votes = 2
+    return pd.Series([sentence, up_votes, down_votes])
+
+
 class Corpora:
     """Corpora representing all Common Voice datasets.
 
@@ -21,6 +29,7 @@ class Corpora:
         args ([str]): command line parameters as list of strings
         corpora ([:class:`corporacreator.Corpus`]): List of :class:`corporacreator.Corpus` instances
     """
+
     def __init__(self, args):
         self.args = args
         self.corpora = []
@@ -30,7 +39,9 @@ class Corpora:
         """
         _logger.info("Creating corpora...")
         corpora_data = self._parse_tsv()
-        corpora_data["sentence"] = corpora_data["sentence"].apply(func=common)
+        corpora_data[["sentence", "up_votes", "down_votes"]] = corpora_data[
+            ["sentence", "up_votes", "down_votes"]
+        ].apply(func=lambda arg: common_wrapper(*arg), axis=1)
         for locale in corpora_data.locale.unique():
             _logger.info("Selecting %s corpus data..." % locale)
             corpus_data = corpora_data.loc[
