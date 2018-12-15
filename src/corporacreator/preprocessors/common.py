@@ -42,7 +42,7 @@ def common(sentence):
       sentence (str): Sentence to be cleaned up.
 
     Returns:
-      (str): Cleaned up sentence.
+      (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
     """
 
     # Decode any URL encoded elements of sentence
