@@ -9,6 +9,7 @@ import pandas as pd
 
 _logger = logging.getLogger(__name__)
 
+
 class Corpus:
     """Corpus representing a Common Voice datasets for a given locale.
 
@@ -22,6 +23,7 @@ class Corpus:
         locale (str): Locale of this :class:`corporacreator.Corpus` 
         corpus_data (:class:`pandas.DataFrame`): `pandas.DataFrame` Containing the corpus data
     """
+
     def __init__(self, args, locale, corpus_data):
         self.args = args
         self.locale = locale
@@ -42,7 +44,9 @@ class Corpus:
         ].apply(func=lambda arg: self._preprocessor_wrapper(*arg), axis=1)
 
     def _preprocessor_wrapper(self, client_id, sentence, up_votes, down_votes):
-        preprocessor = getattr(preprocessors, self.locale.replace("-","")) # Get locale specific preprocessor
+        preprocessor = getattr(
+            preprocessors, self.locale.replace("-", "")
+        )  # Get locale specific preprocessor
         sentence = preprocessor(client_id, sentence)
         if None == sentence or not sentence.strip():
             up_votes = 0
@@ -69,7 +73,9 @@ class Corpus:
         speaker_counts = self.valid["client_id"].value_counts()
         speaker_counts = speaker_counts.to_frame().reset_index()
         speaker_counts.columns = ["client_id", "user_sentence_count"]
-        self.valid = self.valid.join(speaker_counts.set_index("client_id"), on="client_id")
+        self.valid = self.valid.join(
+            speaker_counts.set_index("client_id"), on="client_id"
+        )
         self.valid = self.valid.sort_values(["user_sentence_count", "client_id"])
         valid = self.valid.groupby("sentence").head(self.args.duplicate_sentence_count)
         valid = valid.sort_values(["user_sentence_count", "client_id"], ascending=False)
@@ -79,13 +85,15 @@ class Corpus:
         train_size, dev_size, test_size = self._calculate_data_set_sizes(len(valid))
         # Split into train, dev, and test datasets
         self.train = valid.iloc[0:train_size]
-        self.dev = valid.iloc[train_size:train_size + dev_size]
-        self.test = valid.iloc[train_size + dev_size:train_size + dev_size + test_size]
+        self.dev = valid.iloc[train_size : train_size + dev_size]
+        self.test = valid.iloc[
+            train_size + dev_size : train_size + dev_size + test_size
+        ]
         # TODO: Make sure users are in train, dev, xor test
 
     def _calculate_data_set_sizes(self, total_size):
         # Find maximum size for the training data set in accord with sample theory
-        for train_size  in range(total_size, 0, -1):
+        for train_size in range(total_size, 0, -1):
             calculated_sample_size = int(corporacreator.sample_size(train_size))
             if 2 * calculated_sample_size + train_size <= total_size:
                 dev_size = calculated_sample_size
@@ -113,10 +121,5 @@ class Corpus:
         path = os.path.join(directory, dataset + ".tsv")
         dataframe = getattr(self, dataset)
         dataframe.to_csv(
-            path,
-            sep="\t",
-            header=True,
-            index=False,
-            encoding="utf-8",
-            escapechar='"',
+            path, sep="\t", header=True, index=False, encoding="utf-8", escapechar='"'
         )
