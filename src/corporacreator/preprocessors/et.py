@@ -7,4 +7,4 @@ def et(client_id, sentence):
       (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
     """
     # TODO: Clean up en data
-return sentence
+    return sentence
