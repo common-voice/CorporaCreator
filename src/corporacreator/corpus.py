@@ -4,6 +4,7 @@ import logging
 import corporacreator
 import corporacreator.preprocessors as preprocessors
 
+import swifter
 import pandas as pd
 
 
@@ -41,7 +42,7 @@ class Corpus:
     def _pre_process_corpus_data(self):
         self.corpus_data[["sentence", "up_votes", "down_votes"]] = self.corpus_data[
             ["client_id", "sentence", "up_votes", "down_votes"]
-        ].apply(func=lambda arg: self._preprocessor_wrapper(*arg), axis=1)
+        ].swifter.apply(func=lambda arg: self._preprocessor_wrapper(*arg), axis=1)
 
     def _preprocessor_wrapper(self, client_id, sentence, up_votes, down_votes):
         preprocessor = getattr(
