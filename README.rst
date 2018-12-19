@@ -10,7 +10,7 @@ Installation
 
 After checking this repo out one installs the corresponding python package as follows
 
-``CorporaCreator kdavis$ python setup.py install``
+``CorporaCreator$ python3 setup.py install``
 
 
 Usage
@@ -19,7 +19,7 @@ Usage
 
 Given a ``clips.tsv`` file dumped from the Common Voice database one creates a corpora in the directory ``corpora`` as follows
 
-``CorporaCreator kdavis$ create-corpora -d corpora -f clips.tsv``
+``CorporaCreator$ create-corpora -d corpora -f clips.tsv``
 
 This will create the corpora in the directory ``corpora`` from the ``clips.tsv`` file.
 
@@ -29,11 +29,11 @@ The split of ``valid.tsv`` into ``train.tsv``, ``dev.tsv``, and ``test.tsv`` is 
 
 By default no sentence occurs more than once in ``train.tsv``, ``dev.tsv``, and ``test.tsv``. However, one can relax this constraint using the ``-s`` command line parameter. The value of ``-s`` is the number of repeats allows for a sentence. So, for example, if one wanted to allow for a setence to occur 3 times in a corpus, then one could use
 
-``CorporaCreator kdavis$ create-corpora -d corpora -f clips.tsv -s 3``
+``CorporaCreator$ create-corpora -d corpora -f clips.tsv -s 3``
 
 With or without the use of the ``-s`` command line parameter the result of running ``create-corpora`` will be a directory containing the following files::
 
-    CorporaCreator kdavis$ tree corpora
+    CorporaCreator$ tree corpora
     corpora
     ├── br
     │   ├── dev.tsv
