@@ -7,8 +7,9 @@ import pandas as pd
 from corporacreator import Corpus
 from corporacreator.preprocessors import common
 
-
 _logger = logging.getLogger(__name__)
+_logger.setLevel(logging.DEBUG)
+_logger.addHandler(logging.FileHandler('corpora.log'))
 
 
 def common_wrapper(sentence, up_votes, down_votes):
