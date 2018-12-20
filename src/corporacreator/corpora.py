@@ -2,6 +2,7 @@ import os
 import csv
 import logging
 
+import swifter
 import pandas as pd
 
 from corporacreator import Corpus
@@ -40,7 +41,7 @@ class Corpora:
         corpora_data = self._parse_tsv()
         corpora_data[["sentence", "up_votes", "down_votes"]] = corpora_data[
             ["sentence", "up_votes", "down_votes"]
-        ].apply(func=lambda arg: common_wrapper(*arg), axis=1)
+        ].swifter.apply(func=lambda arg: common_wrapper(*arg), axis=1)
         for locale in corpora_data.locale.unique():
             _logger.info("Selecting %s corpus data..." % locale)
             corpus_data = corpora_data.loc[
