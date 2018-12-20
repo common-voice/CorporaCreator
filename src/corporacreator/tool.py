@@ -7,8 +7,6 @@ from corporacreator import setup_logging
 
 
 _logger = logging.getLogger(__name__)
-_logger.setLevel(logging.DEBUG)
-_logger.addHandler(logging.FileHandler('tool.log'))
 
 def main(args):
     """Main entry point allowing external calls

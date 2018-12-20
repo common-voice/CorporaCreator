@@ -7,8 +7,6 @@ import corporacreator.preprocessors as preprocessors
 import pandas as pd
 
 _logger = logging.getLogger(__name__)
-_logger.setLevel(logging.DEBUG)
-_logger.addHandler(logging.FileHandler('corpus.log'))
 
 
 class Corpus:
