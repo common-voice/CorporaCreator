@@ -6,7 +6,6 @@ import corporacreator.preprocessors as preprocessors
 
 import pandas as pd
 
-
 _logger = logging.getLogger(__name__)
 
 

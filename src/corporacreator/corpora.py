@@ -7,7 +7,6 @@ import pandas as pd
 from corporacreator import Corpus
 from corporacreator.preprocessors import common
 
-
 _logger = logging.getLogger(__name__)
 
 
