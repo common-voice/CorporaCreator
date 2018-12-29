@@ -1,3 +1,5 @@
+import unicodedata
+
 from urllib.parse import unquote
 from html.parser import HTMLParser
 
@@ -39,6 +41,24 @@ def _strip_tags(html):
     return s.get_data()
 
 
+def _strip_string(sentence):
+    """Cleans a string based on a whitelist of printable unicode categories.
+
+    You can find a full list of categories here:
+    http://www.fileformat.info/info/unicode/category/index.htm
+    """
+    letters     = ('LC', 'Ll', 'Lm', 'Lo', 'Lt', 'Lu')
+    numbers     = ('Nd', 'Nl', 'No')
+    marks       = ('Mc', 'Me', 'Mn')
+    punctuation = ('Pc', 'Pd', 'Pe', 'Pf', 'Pi', 'Po', 'Ps')
+    symbol      = ('Sc', 'Sk', 'Sm', 'So')
+    space       = ('Zs',)
+
+    allowed_categories = letters + numbers + marks + punctuation + symbol + space
+
+    return u''.join([c for c in sentence if unicodedata.category(c) in allowed_categories])
+
+
 def common(sentence):
     """Cleans up the passed sentence in a language independent manner, removing or reformatting invalid data.
 
@@ -53,5 +73,7 @@ def common(sentence):
     sentence = unquote(sentence)
     # Remove any HTML tags
     sentence = _strip_tags(sentence)
+    # Remove non-printable characters
+    sentence = _strip_string(sentence)
     # TODO: Clean up data in a language independent manner
     return sentence
