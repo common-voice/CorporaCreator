@@ -45,9 +45,12 @@ class Corpus:
 
     def _preprocessor_wrapper(self, client_id, sentence, up_votes, down_votes):
         preprocessor = getattr(
-            preprocessors, self.locale.replace("-", "")
+            preprocessors, self.locale.replace("-", ""), None
         )  # Get locale specific preprocessor
-        sentence = preprocessor(client_id, sentence)
+        if preprocessor is None:
+            _logger.debug("No preprocessor found for %s." % self.locale)
+        else:
+            sentence = preprocessor(client_id, sentence)
         if None == sentence or not sentence.strip():
             up_votes = 0
             down_votes = 2
