@@ -49,83 +49,16 @@ With or without the use of the ``-s`` command line parameter the result of runni
     │   ├── test.tsv
     │   ├── train.tsv
     │   └── valid.tsv
-    ├── cv
+    ├── cnh
     │   ├── dev.tsv
     │   ├── invalid.tsv
     │   ├── other.tsv
     │   ├── test.tsv
     │   ├── train.tsv
     │   └── valid.tsv
-    ├── cy
-    │   ├── dev.tsv
-    │   ├── invalid.tsv
-    │   ├── other.tsv
-    │   ├── test.tsv
-    │   ├── train.tsv
-    │   └── valid.tsv
-    ├── de
-    │   ├── dev.tsv
-    │   ├── invalid.tsv
-    │   ├── other.tsv
-    │   ├── test.tsv
-    │   ├── train.tsv
-    │   └── valid.tsv
-    ├── en
-    │   ├── dev.tsv
-    │   ├── invalid.tsv
-    │   ├── other.tsv
-    │   ├── test.tsv
-    │   ├── train.tsv
-    │   └── valid.tsv
-    ├── fr
-    │   ├── dev.tsv
-    │   ├── invalid.tsv
-    │   ├── other.tsv
-    │   ├── test.tsv
-    │   ├── train.tsv
-    │   └── valid.tsv
-    ├── ga-IE
-    │   ├── dev.tsv
-    │   ├── invalid.tsv
-    │   ├── other.tsv
-    │   ├── test.tsv
-    │   ├── train.tsv
-    │   └── valid.tsv
-    ├── it
-    │   ├── dev.tsv
-    │   ├── invalid.tsv
-    │   ├── other.tsv
-    │   ├── test.tsv
-    │   ├── train.tsv
-    │   └── valid.tsv
-    ├── kab
-    │   ├── dev.tsv
-    │   ├── invalid.tsv
-    │   ├── other.tsv
-    │   ├── test.tsv
-    │   ├── train.tsv
-    │   └── valid.tsv
-    ├── ky
-    │   ├── dev.tsv
-    │   ├── invalid.tsv
-    │   ├── other.tsv
-    │   ├── test.tsv
-    │   ├── train.tsv
-    │   └── valid.tsv
-    ├── sl
-    │   ├── dev.tsv
-    │   ├── invalid.tsv
-    │   ├── other.tsv
-    │   ├── test.tsv
-    │   ├── train.tsv
-    │   └── valid.tsv
-    ├── tr
-    │   ├── dev.tsv
-    │   ├── invalid.tsv
-    │   ├── other.tsv
-    │   ├── test.tsv
-    │   ├── train.tsv
-    │   └── valid.tsv
+    .
+    .
+    .
     ├── tt
     │   ├── dev.tsv
     │   ├── invalid.tsv
@@ -141,4 +74,5 @@ With or without the use of the ``-s`` command line parameter the result of runni
         ├── train.tsv
         └── valid.tsv
     
-    15 directories, 90 files
+    19 directories, 114 files
+
