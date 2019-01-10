@@ -27,7 +27,7 @@ Each created corpus will contain the files ``valid.tsv``, containing the validat
 
 The split of ``valid.tsv`` into ``train.tsv``, ``dev.tsv``, and ``test.tsv`` is done such that the number of clips in ``dev.tsv`` or ``test.tsv`` is a "statistically significant" sample relataive to the number of clips in ``train.tsv``. More specificially, if the population size is the number of clips in ``train.tsv``, then the number of clips in ``dev.tsv`` or ``test.tsv`` is the sample size required for a confidence level of 99% and a margin of error of 1% for the ``train.tsv`` population size.
 
-By default no sentence occurs more than once in ``train.tsv``, ``dev.tsv``, and ``test.tsv``. However, one can relax this constraint using the ``-s`` command line parameter. The value of ``-s`` is the number of repeats allows for a sentence. So, for example, if one wanted to allow for a setence to occur 3 times in a corpus, then one could use
+By default no sentence occurs more than once in ``train.tsv``, ``dev.tsv``, and ``test.tsv``. However, one can relax this constraint using the ``-s`` command line parameter. The value of ``-s`` is the number of repeats allows for a sentence. So, for example, if one wanted to allow for a sentence to occur 3 times in a corpus, then one could use
 
 ``CorporaCreator$ create-corpora -d corpora -f clips.tsv -s 3``
 
