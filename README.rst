@@ -134,5 +134,39 @@ If the sentence is not able to be cleaned, e.g. it consisted only of HTML fragme
 
 Currently `common.py`_ decodes any URL encoded elements of sentence, removes any HTML tags in a sentence, and removes any non-printable characters in a sentence, in that order. (For the details refer to `common.py`_ .) This seems to catch most language independent problems, but if you see more, please open an issue or make a pull request.
 
+
+Language Dependent Cleaning
+``````````````````````````````
+
+In addition to the language independent plugin `common.py`_  ``create-corpora`` has a plugin for each language in the alpha ``clips.tsv`` release. Each one of these plugins is responsible for cleaning the sentences in its corresponding language. So, for example, there is a plugin `en.py`_ for English that is responsible for cleaning the English sentences.
+
+The language dependent cleaning is done by an appropriately named method in the language's plugin. So, for example, the cleaning for English is done by the ``en()`` method in `en.py`_:
+
+::
+
+    def en(client_id, sentence):
+        """Cleans up the passed sentence, removing or reformatting invalid data.
+        Args:
+          client_id (str): Client ID of sentence's speaker
+          sentence (str): Sentence to be cleaned up.
+        Returns:
+          (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
+        """
+        # TODO: Clean up en data
+        return sentence
+
+This method is input the sentence to clean along with the client_id of the contributor who read the sentence. It then cleans the sentence in a language dependent manner and returns the cleaned sentence.
+
+If the sentence is not able to be cleaned, e.g. it is so mangled that it is impossible to determine how to correct it to a valid English sentence, this method can return ``None`` or a string containing only whitespace to indicate the sentence was invalid to begin with.
+
+
+Language Independent vs Dependent Cleaning
+``````````````````````````````````````````
+
+Of note is that in the language dependent case the method that does the cleaning takes not only the sentence but also the client_id of the contributor who read the sentence. In the language independent case this client_id was not present. However, for the language dependent case it's unfortunately required.
+
+A sentence may contain text which is able to be read in many different, but valid, ways. For example, the sentence "I am in room 4025." can be validly read as "I am in room four oh two five". Equivalently, a valid reading is: "I am in room four zero two five". There are also other valid readings: "I am in room forty twenty five.", "I am in room four thousand twenty five."... To actually determine which of these readings a particular contributor gave, you have to listen to the audio, determine what they said, then replace the digits with text reflecting the contributor's reading, returning this cleaned sentence.
+
 .. _tab separated file: https://en.wikipedia.org/wiki/Tab-separated_values
 .. _common.py: https://github.com/mozilla/CorporaCreator/blob/master/src/corporacreator/preprocessors/common.py
+.. _en.py: https://github.com/mozilla/CorporaCreator/blob/master/src/corporacreator/preprocessors/en.py
