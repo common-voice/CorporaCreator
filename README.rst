@@ -108,7 +108,7 @@ The problem is that data in the column ``sentence`` needs to be cleaned, as ther
 Language Independent Cleaning
 ``````````````````````````````
 
-To correct these problems we outfitted ``create-corpora`` with a common plugin `common.py`_ that is responsible for cleaning sentences in a language independent manner. For example, if a sentence contains HTML fragments, then the HTML fragments would be removed by `common.py`_.
+To correct these problems we outfitted ``create-corpora`` with a plugin `common.py`_ that is responsible for cleaning sentences in a language independent manner. For example, if a sentence contains HTML fragments, then the HTML fragments would be removed by `common.py`_.
 
 The processing of `common.py`_ is done in the method:
 
