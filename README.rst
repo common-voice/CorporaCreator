@@ -76,3 +76,51 @@ With or without the use of the ``-s`` command line parameter the result of runni
     
     19 directories, 114 files
 
+
+Contributing
+===========
+
+Introduction
+------------
+
+The purpose of the ``create-corpora`` command line tool is to provide a jumping-off point for contributors. The data in the alpha release of the Common Voice data is, unfortunately, in need of cleaning and the ``create-corpora`` command line tool provides a plugin for each language that allows for the language communities to aid in cleaning the data.
+
+
+Detailed Introduction
+---------------------
+
+The ``clips.tsv`` file is a `tab separated file`_ containing a dump of the raw data from Common Voice with the following columns:
+
+1) ``client_id`` - A unique identifier for the contributor that was randomly generated
+2) ``path`` - The path the the audio file containing the contribution
+3) ``sentence`` - The sentence the contributor was asked to read
+4) ``up_votes`` - The number of up votes for the contribution
+5) ``down_votes`` - The number of down votes for the contribution
+6) ``age`` - The age range of the contributor, if the contributor reported it
+7) ``gender`` - The gender of the contributor, if the contributor reported it
+8) ``accent`` - The accent of the contributor, if the contributor reported it
+9) ``locale`` - The locale decribing the language the contributor was reading
+10) ``bucket`` - The "bucket" (train, dev, or test) the clip is currently assigned to
+
+The problem is that data in the column ``sentence`` needs to be cleaned, as there are various problems with the data in the ``sentence`` column. For example some sentences contain HTML fragments. Some contain spelling errors. Some contain digits, e.g. "Room 4025" that allow for many valid readings. Some contain errors which we at Mozilla are not even aware of.
+
+So to correct these we outfitted ``create-corpora`` with a common plugin `common.py`_ that is responsible for cleaning sentences in a language agnostic manner. For example, if a sentence contains HTML fragments, then the HTML fragments would be removed by `common.py`_.
+
+The processing of `common.py`_ is done in the method: 
+
+::
+
+def common(sentence):
+    """Cleans up the passed sentence in a language independent manner, removing or reformatting invalid data.
+    Args:
+      sentence (str): Sentence to be cleaned up.
+    Returns:
+      (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
+    """
+    ...
+    # TODO: Clean up data in a language independent manner
+    return sentence
+
+
+.. _tab separated file: https://en.wikipedia.org/wiki/Tab-separated_values
+.. _common.py: https://github.com/mozilla/CorporaCreator/blob/master/src/corporacreator/preprocessors/common.py
