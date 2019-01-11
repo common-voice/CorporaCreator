@@ -86,8 +86,8 @@ Introduction
 The purpose of the ``create-corpora`` command line tool is to provide a jumping-off point for contributors. The data in the alpha release of the Common Voice data is, unfortunately, in need of cleaning and the ``create-corpora`` command line tool provides a plugin for each language that allows for the language communities to aid in cleaning the data.
 
 
-Detailed Introduction
----------------------
+Cleaning Sentences
+------------------
 
 The ``clips.tsv`` file is a `tab separated file`_ containing a dump of the raw data from Common Voice with the following columns:
 
