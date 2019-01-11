@@ -17,7 +17,7 @@ Usage
 ===========
 
 
-Given a ``clips.tsv`` file dumped from the Common Voice database one creates a corpora in the directory ``corpora`` as follows
+Given the ``clips.tsv`` file dumped from the Common Voice database one creates a corpora in the directory ``corpora`` as follows
 
 ``CorporaCreator$ create-corpora -d corpora -f clips.tsv``
 
@@ -31,7 +31,7 @@ By default no sentence occurs more than once in ``train.tsv``, ``dev.tsv``, and 
 
 ``CorporaCreator$ create-corpora -d corpora -f clips.tsv -s 3``
 
-With or without the use of the ``-s`` command line parameter the result of running ``create-corpora`` will be a directory containing the following files::
+With or without the use of the ``-s`` command line parameter, the result of running ``create-corpora`` will be a directory containing the following files::
 
     CorporaCreator$ tree corpora
     corpora
@@ -91,7 +91,7 @@ Detailed Introduction
 
 The ``clips.tsv`` file is a `tab separated file`_ containing a dump of the raw data from Common Voice with the following columns:
 
-1) ``client_id`` - A unique identifier for the contributor that was randomly generated
+1) ``client_id`` - A unique identifier for the contributor that was randomly generated when the contributor joined
 2) ``path`` - The path the the audio file containing the contribution
 3) ``sentence`` - The sentence the contributor was asked to read
 4) ``up_votes`` - The number of up votes for the contribution
@@ -102,7 +102,7 @@ The ``clips.tsv`` file is a `tab separated file`_ containing a dump of the raw d
 9) ``locale`` - The locale decribing the language the contributor was reading
 10) ``bucket`` - The "bucket" (train, dev, or test) the clip is currently assigned to
 
-The problem is that data in the column ``sentence`` needs to be cleaned, as there are various problems with the data in the ``sentence`` column. For example some sentences contain HTML fragments. Some contain spelling errors. Some contain digits, e.g. "Room 4025" that allow for many valid readings. Some contain errors which we at Mozilla are not even aware of.
+Our problem is that data in the column ``sentence`` needs to be cleaned, as there are various problems with the data in the ``sentence`` column. For example, some sentences contain HTML fragments. Some contain spelling errors. Some contain digits, e.g. "Room 4025" that allow for many valid readings. Some contain errors which we at Mozilla are not even aware of.
 
 
 Language Independent Cleaning
@@ -110,7 +110,7 @@ Language Independent Cleaning
 
 To correct these problems we outfitted ``create-corpora`` with a plugin `common.py`_ that is responsible for cleaning sentences in a language independent manner. For example, if a sentence contains HTML fragments, then the HTML fragments would be removed by `common.py`_.
 
-The processing of `common.py`_ is done in the method:
+The language independent cleaning is done by the ``common()`` method in `common.py`_:
 
 ::
 
@@ -128,7 +128,9 @@ The processing of `common.py`_ is done in the method:
         ...
         return sentence
 
-which is input the sentence to clean, cleans the sentence in a language independent manner, and returns the cleaned sentence. If the sentence is not able to be cleaned, e.g. it consisted only of HTML fragments, this method can return ``None`` or a string containing only whitespace to indicate the sentence was invalid to begin with.
+This method is input the sentence to clean, cleans the sentence in a language independent manner, and returns the cleaned sentence.
+
+If the sentence is not able to be cleaned, e.g. it consisted only of HTML fragments, this method can return ``None`` or a string containing only whitespace to indicate the sentence was invalid to begin with.
 
 Currently `common.py`_ decodes any URL encoded elements of sentence, removes any HTML tags in a sentence, and removes any non-printable characters in a sentence, in that order. (For the details refer to `common.py`_ .) This seems to catch most language independent problems, but if you see more, please open an issue or make a pull request.
 
