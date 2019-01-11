@@ -4,6 +4,8 @@ CorporaCreator
 
 This is a command line tool to create Common Voice corpora.
 
+.. contents:: Table of Contents
+
 
 Installation
 ===========
