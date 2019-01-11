@@ -106,6 +106,14 @@ The ``clips.tsv`` file is a `tab separated file`_ containing a dump of the raw d
 
 Our problem is that data in the column ``sentence`` needs to be cleaned, as there are various problems with the data in the ``sentence`` column. For example, some sentences contain HTML fragments. Some contain spelling errors. Some contain digits, e.g. "Room 4025" that allow for many valid readings. Some contain errors which we at Mozilla are not even aware of.
 
+What Needs to be Cleaned?
+`````````````````````````
+
+To actually see what needs to be cleaned first hand, the best thing to do is to run ``create-corpora`` as suggested above:
+
+``CorporaCreator$ create-corpora -d corpora -f clips.tsv``
+
+which will create the corpora in the directory ``corpora`` from the ``clips.tsv`` file. Then examine, for English say, the file ``corpora/en/valid.tsv`` to see which sentences there need cleaning. For other languages you would examine the corresponding file, e.g. for French it would be ``corpora/fr/valid.tsv``.
 
 Language Independent Cleaning
 ``````````````````````````````
