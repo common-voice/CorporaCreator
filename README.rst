@@ -167,6 +167,60 @@ Of note is that in the language dependent case the method that does the cleaning
 
 A sentence may contain text which is able to be read in many different, but valid, ways. For example, the sentence "I am in room 4025." can be validly read as "I am in room four oh two five". Equivalently, a valid reading is: "I am in room four zero two five". There are also other valid readings: "I am in room forty twenty five.", "I am in room four thousand twenty five."... To actually determine which of these readings a particular contributor gave, you have to listen to the audio, determine what they said, then replace the digits with text reflecting the contributor's reading, returning this cleaned sentence.
 
+
+Contributing Code
+-----------------
+
+If you are interested in helping clean sentences for a particular language, or even cleaning in a language independent manner in `common.py`_  you can make a pull request that includes your changes. Here we will look at some common ways to correct sentences.
+
+
+Spelling Corrections
+````````````````````
+
+Suppose you found that one, or more English sentences had a mispelling of the word "masquerade" as "masqurade" (sic). As this is concerned with the English language you would write code in the `en.py`_ plugin. A siimple solution would be to replace all occurances of "masqurade" (sic) with "masquerade" in every sentence. One could do this as follows:
+
+::
+
+    def en(client_id, sentence):
+        """Cleans up the passed sentence, removing or reformatting invalid data.
+        Args:
+          client_id (str): Client ID of sentence's speaker
+          sentence (str): Sentence to be cleaned up.
+        Returns:
+          (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
+        """
+        sentence = sentence.replace("masqurade", "masquerade")
+        # TODO: Clean up en data
+        return sentence
+
+what you have to be carful about, and which is a complexity that this simple example ignores, is that the word you are replacing can not appear in a context where the repalcement is invalid. For example, if "the" were mistyped as "teh", then doing the same replacement of "teh" with "the" would run the risk of converting "tehran" to "theran", an undesired consequence. So you have to be careful.
+
+
+Abbreviations
+`````````````
+
+Suppose you found that one, or more English sentences used the abbreviation "STT" for "speech-to-text". Some people may have read "STT" as the letters "S T T". However, some may have known the abbreviation and read this as "speech-to-text". To determine which was done you have to head the audio for each reading and write code that handles each contributor individually.
+
+One could do this as follows:
+
+::
+
+    def en(client_id, sentence):
+        """Cleans up the passed sentence, removing or reformatting invalid data.
+        Args:
+          client_id (str): Client ID of sentence's speaker
+          sentence (str): Sentence to be cleaned up.
+        Returns:
+          (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
+        """
+        if client_id == "8d59b8879856":
+            sentence = sentence.replace("STT", "speech-to-text")
+        if client_id == "48f3620be0fa":
+            sentence = sentence.replace("STT", "S T T")
+        # TODO: Clean up en data
+        return sentence
+
+
 .. _tab separated file: https://en.wikipedia.org/wiki/Tab-separated_values
 .. _common.py: https://github.com/mozilla/CorporaCreator/blob/master/src/corporacreator/preprocessors/common.py
 .. _en.py: https://github.com/mozilla/CorporaCreator/blob/master/src/corporacreator/preprocessors/en.py
