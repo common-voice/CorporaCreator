@@ -220,6 +220,38 @@ One could do this as follows:
         # TODO: Clean up en data
         return sentence
 
+To actually hear the audio, you have to request the audio from Mozilla. (See the information distributed with the alpha release as to how to obtain the audio.)
+
+Once you have obtained the audio, you can hear the audio for a given sentence and client_id pair by finding the row corresponding to the sentence + client_id pair in ``clips.tsv``, finding the ``path`` in that row, then playing the file corresponding to the row's ``path`` in the downloaded audio.
+
+
+Digits
+``````
+
+Suppose you found that one, or more English sentences used the text "room 4025". Some people may have read "room 4025" as "room four oh two five", some as "room four zero two five", some in a completely different way. Again, to determine which way the digits were read, you have to hear the audio for each reading and write code that handles each contributor individually.
+
+One could do this as follows:
+
+::
+
+    def en(client_id, sentence):
+        """Cleans up the passed sentence, removing or reformatting invalid data.
+        Args:
+          client_id (str): Client ID of sentence's speaker
+          sentence (str): Sentence to be cleaned up.
+        Returns:
+          (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
+        """
+        if client_id == "8d59b8879856":
+            sentence = sentence.replace("room 4025", "room four oh two five")
+        if client_id == "48f3620be0fa":
+            sentence = sentence.replace("room 4025", "room four zero two five")
+        # TODO: Clean up en data
+        return sentence
+
+To actually hear the audio, you have to request the audio from Mozilla. (See the information distributed with the alpha release as to how to obtain the audio.)
+
+As in the case of abbreviations, you can hear the audio for a given sentence and client_id pair by finding the row corresponding to the sentence + client_id pair in ``clips.tsv``, finding the ``path`` in that row, then playing the file corresponding to the row's ``path`` in the downloaded audio.
 
 .. _tab separated file: https://en.wikipedia.org/wiki/Tab-separated_values
 .. _common.py: https://github.com/mozilla/CorporaCreator/blob/master/src/corporacreator/preprocessors/common.py
