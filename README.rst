@@ -106,21 +106,5 @@ The problem is that data in the column ``sentence`` needs to be cleaned, as ther
 
 So to correct these we outfitted ``create-corpora`` with a common plugin `common.py`_ that is responsible for cleaning sentences in a language agnostic manner. For example, if a sentence contains HTML fragments, then the HTML fragments would be removed by `common.py`_.
 
-The processing of `common.py`_ is done in the method: 
-
-::
-
-def common(sentence):
-    """Cleans up the passed sentence in a language independent manner, removing or reformatting invalid data.
-    Args:
-      sentence (str): Sentence to be cleaned up.
-    Returns:
-      (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
-    """
-    ...
-    # TODO: Clean up data in a language independent manner
-    return sentence
-
-
 .. _tab separated file: https://en.wikipedia.org/wiki/Tab-separated_values
 .. _common.py: https://github.com/mozilla/CorporaCreator/blob/master/src/corporacreator/preprocessors/common.py
