@@ -99,7 +99,7 @@ The ``clips.tsv`` file is a `tab separated file`_ containing a dump of the raw d
 6) ``age`` - The age range of the contributor, if the contributor reported it
 7) ``gender`` - The gender of the contributor, if the contributor reported it
 8) ``accent`` - The accent of the contributor, if the contributor reported it
-9) ``locale`` - The locale decribing the language the contributor was reading
+9) ``locale`` - The locale describing the language the contributor was reading
 10) ``bucket`` - The "bucket" (train, dev, or test) the clip is currently assigned to
 
 Our problem is that data in the column ``sentence`` needs to be cleaned, as there are various problems with the data in the ``sentence`` column. For example, some sentences contain HTML fragments. Some contain spelling errors. Some contain digits, e.g. "Room 4025" that allow for many valid readings. Some contain errors which we at Mozilla are not even aware of.
@@ -177,7 +177,7 @@ If you are interested in helping clean sentences for a particular language, or e
 Spelling Corrections
 ````````````````````
 
-Suppose you found that one, or more English sentences had a mispelling of the word "masquerade" as "masqurade" (sic). As this is concerned with the English language you would write code in the `en.py`_ plugin. A siimple solution would be to replace all occurances of "masqurade" (sic) with "masquerade" in every sentence. One could do this as follows:
+Suppose you found that one, or more English sentences had a misspelling of the word "masquerade" as "masqurade" (sic). As this is concerned with the English language you would write code in the `en.py`_ plugin. A simple solution would be to replace all occurrences of "masqurade" (sic) with "masquerade" in every sentence. One could do this as follows:
 
 ::
 
@@ -193,7 +193,7 @@ Suppose you found that one, or more English sentences had a mispelling of the wo
         # TODO: Clean up en data
         return sentence
 
-what you have to be carful about, and which is a complexity that this simple example ignores, is that the word you are replacing can not appear in a context where the repalcement is invalid. For example, if "the" were mistyped as "teh", then doing the same replacement of "teh" with "the" would run the risk of converting "tehran" to "theran", an undesired consequence. So you have to be careful.
+what you have to be careful about, and which is a complexity that this simple example ignores, is that the word you are replacing can not appear in a context where the replacement is invalid. For example, if "the" were mistyped as "teh", then doing the same replacement of "teh" with "the" would run the risk of converting "tehran" to "theran", an undesired consequence. So you have to be careful.
 
 
 Abbreviations
