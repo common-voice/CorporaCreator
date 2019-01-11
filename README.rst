@@ -104,7 +104,33 @@ The ``clips.tsv`` file is a `tab separated file`_ containing a dump of the raw d
 
 The problem is that data in the column ``sentence`` needs to be cleaned, as there are various problems with the data in the ``sentence`` column. For example some sentences contain HTML fragments. Some contain spelling errors. Some contain digits, e.g. "Room 4025" that allow for many valid readings. Some contain errors which we at Mozilla are not even aware of.
 
-So to correct these we outfitted ``create-corpora`` with a common plugin `common.py`_ that is responsible for cleaning sentences in a language agnostic manner. For example, if a sentence contains HTML fragments, then the HTML fragments would be removed by `common.py`_.
+
+Language Independent Cleaning
+``````````````````````````````
+
+To correct these problems we outfitted ``create-corpora`` with a common plugin `common.py`_ that is responsible for cleaning sentences in a language independent manner. For example, if a sentence contains HTML fragments, then the HTML fragments would be removed by `common.py`_.
+
+The processing of `common.py`_ is done in the method:
+
+::
+
+    def common(sentence):
+        """Cleans up the passed sentence in a language independent manner, removing or reformatting
+           invalid data.
+        Args:
+          sentence (str): Sentence to be cleaned up.
+        Returns:
+          (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as
+                 invalid.
+        """
+        ...
+        # Clean sentence in a language independent manner
+        ...
+        return sentence
+
+which is input the sentence to clean, cleans the sentence in a language independent manner, and returns the cleaned sentence. If the sentence is not able to be cleaned, e.g. it consisted only of HTML fragments, this method can return ``None`` or a string containing only whitespace to indicate the sentence was invalid to begin with.
+
+Currently `common.py`_ decodes any URL encoded elements of sentence, removes any HTML tags in a sentence, and removes any non-printable characters in a sentence, in that order. (For the details refer to `common.py`_ .) This seems to catch most language independent problems, but if you see more, please open an issue or make a pull request.
 
 .. _tab separated file: https://en.wikipedia.org/wiki/Tab-separated_values
 .. _common.py: https://github.com/mozilla/CorporaCreator/blob/master/src/corporacreator/preprocessors/common.py
