@@ -94,7 +94,7 @@ Cleaning Sentences
 The ``clips.tsv`` file is a `tab separated file`_ containing a dump of the raw data from Common Voice with the following columns:
 
 1) ``client_id`` - A unique identifier for the contributor that was randomly generated when the contributor joined
-2) ``path`` - The path the the audio file containing the contribution
+2) ``path`` - The path to the audio file containing the contribution
 3) ``sentence`` - The sentence the contributor was asked to read
 4) ``up_votes`` - The number of up votes for the contribution
 5) ``down_votes`` - The number of down votes for the contribution
