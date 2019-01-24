@@ -67,6 +67,13 @@ def parse_args(args):
         dest="tsv_filename",
     )
     parser.add_argument(
+        "-l",
+        "--langs",
+        required=False,
+        nargs='+',
+        help="Which languages you want to make corpora for",
+    )
+    parser.add_argument(
         "-d",
         "--directory",
         required=True,

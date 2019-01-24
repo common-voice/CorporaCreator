@@ -42,7 +42,12 @@ class Corpora:
         corpora_data[["sentence", "up_votes", "down_votes"]] = corpora_data[
             ["sentence", "up_votes", "down_votes"]
         ].swifter.apply(func=lambda arg: common_wrapper(*arg), axis=1)
-        for locale in corpora_data.locale.unique():
+        if self.args.langs:
+            locales = self.args.langs
+        else:
+            locales = corpora_data.locale.unique()
+            
+        for locale in locales:
             _logger.info("Selecting %s corpus data..." % locale)
             corpus_data = corpora_data.loc[
                 lambda df: df.locale == locale,
