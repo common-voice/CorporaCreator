@@ -78,18 +78,30 @@ class Corpus:
         )
         self.valid = self.valid.sort_values(["user_sentence_count", "client_id"])
         valid = self.valid.groupby("sentence").head(self.args.duplicate_sentence_count)
+        
         valid = valid.sort_values(["user_sentence_count", "client_id"], ascending=False)
         valid = valid.drop(columns="user_sentence_count")
         self.valid = self.valid.drop(columns="user_sentence_count")
         # Determine train, dev, and test sizes
         train_size, dev_size, test_size = self._calculate_data_set_sizes(len(valid))
         # Split into train, dev, and test datasets
-        self.train = valid.iloc[0:train_size]
-        self.dev = valid.iloc[train_size : train_size + dev_size]
-        self.test = valid.iloc[
-            train_size + dev_size : train_size + dev_size + test_size
-        ]
-        # TODO: Make sure users are in train, dev, xor test
+        continous_client_index, uniques = pd.factorize(valid["client_id"])
+        valid["continous_client_index"] = continous_client_index
+        train = pd.DataFrame(columns=valid.columns)
+        dev = pd.DataFrame(columns=valid.columns)
+        test = pd.DataFrame(columns=valid.columns)
+
+        for i in range(max(continous_client_index), -1, -1):
+            if len(test) + len(valid[valid["continous_client_index"] == i]) <= test_size:
+                test = pd.concat([test, valid[valid["continous_client_index"] == i]])
+            elif len(dev) + len(valid[valid["continous_client_index"] == i]) <= dev_size:
+                dev = pd.concat([dev, valid[valid["continous_client_index"] == i]])
+            else:
+                train = pd.concat([train, valid[valid["continous_client_index"] == i]])
+
+        self.train = train.drop(columns="continous_client_index")
+        self.dev = dev.drop(columns="continous_client_index")
+        self.test = test.drop(columns="continous_client_index")
 
     def _calculate_data_set_sizes(self, total_size):
         # Find maximum size for the training data set in accord with sample theory
