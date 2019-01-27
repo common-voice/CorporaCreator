@@ -71,7 +71,7 @@ def parse_args(args):
         "--langs",
         required=False,
         nargs='+',
-        help="Which languages you want to make corpora for",
+        help="Which language(s) you want to make corpora for",
     )
     parser.add_argument(
         "-d",

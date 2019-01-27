@@ -7,6 +7,7 @@ import pandas as pd
 
 from corporacreator import Corpus
 from corporacreator.preprocessors import common
+import argparse
 
 _logger = logging.getLogger(__name__)
 
@@ -43,7 +44,12 @@ class Corpora:
             ["sentence", "up_votes", "down_votes"]
         ].swifter.apply(func=lambda arg: common_wrapper(*arg), axis=1)
         if self.args.langs:
-            locales = self.args.langs
+            # check if all languages provided at command line are actually
+            # in the clips.tsv file, if not, throw error
+            if self.args.langs.issubset(corpora_data.locale.unique()):
+                locales = self.args.langs
+            else:
+                raise argparse.ArgumentTypeError("ERROR: You have requested languages which do not exist in clips.tsv")
         else:
             locales = corpora_data.locale.unique()
             

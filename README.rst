@@ -19,11 +19,17 @@ Usage
 ===========
 
 
-Given the ``clips.tsv`` file dumped from the Common Voice database one creates a corpora in the directory ``corpora`` as follows
+Given the ``clips.tsv`` file dumped from the Common Voice database, you can create a corpus (for each language in the ``clips.tsv`` file) as follows:
 
 ``CorporaCreator$ create-corpora -d corpora -f clips.tsv``
 
 This will create the corpora in the directory ``corpora`` from the ``clips.tsv`` file.
+
+If you would like to just create corpora for a some language(s), you can pass the ``--langs`` flag as follows:
+
+``CorporaCreator$ create-corpora -d corpora -f clips.tsv --langs en fr``
+
+This will create the corpora only for English and French.
 
 Each created corpus will contain the files ``valid.tsv``, containing the validated clips; ``invalid.tsv``, containing the invalidated clips; and ``other.tsv``, containing clips that don't have sufficient votes to be considered valid or invalid. In addition it will contain the files ``train.tsv``, the valid clips in the training set; ``dev.tsv``, the valid clips in the validation set; and ``test.tsv``, the valid clips in test set.
 
