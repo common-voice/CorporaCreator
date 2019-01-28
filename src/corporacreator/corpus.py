@@ -121,5 +121,5 @@ class Corpus:
         path = os.path.join(directory, dataset + ".tsv")
         dataframe = getattr(self, dataset)
         dataframe.to_csv(
-            path, sep="\t", header=True, index=False, encoding="utf-8", escapechar='"'
+            path, sep="\t", header=True, index=False, encoding="utf-8", escapechar='\\', quoting=csv.QUOTE_NONE
         )
