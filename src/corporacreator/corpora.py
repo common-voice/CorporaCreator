@@ -46,7 +46,7 @@ class Corpora:
         if self.args.langs:
             # check if all languages provided at command line are actually
             # in the clips.tsv file, if not, throw error
-            if self.args.langs.issubset(corpora_data.locale.unique()):
+            if set(self.args.langs).issubset(set(corpora_data.locale.unique())):
                 locales = self.args.langs
             else:
                 raise argparse.ArgumentTypeError("ERROR: You have requested languages which do not exist in clips.tsv")
