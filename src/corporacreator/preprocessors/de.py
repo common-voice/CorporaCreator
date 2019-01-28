@@ -3,11 +3,11 @@ QUOTE_PATTERN = re.compile(r'^\"{3}(.*)\"{2}(.*)\"{1}$')
 QUOTE_PATTERN_2 = re.compile(r'^\"{1}(.*)\"{2}(.*)\"{2}(.*)\"{1}$')
 QUOTE_PATTERN_3 = re.compile(r'^\"{1}(.*)\"{1}')
     
-def _remove_multi_quotes(sentence):
-    """Removes all quotes from patterns like 
-    \"""content""content" or
-    "content""content""content" or
-    "content"
+def _change_multi_quotes(sentence):
+    """Changes all quotes from patterns like 
+    [\"""content""content"] to [content content] or
+    ["content""content""content"] to [content "content" content] or
+    ["content" to content]
     
     Args:
       sentence (str): Sentence to be cleaned up.
@@ -23,7 +23,7 @@ def _remove_multi_quotes(sentence):
     if matches != None and matches.lastindex == 2:
         return "{}{}".format(matches.group(1), matches.group(2))
     elif matches2 != None and matches2.lastindex == 3:
-        return "{}{}{}".format(matches2.group(1), matches2.group(2), matches2.group(3))
+        return "{}\"{}\"{}".format(matches2.group(1), matches2.group(2), matches2.group(3))
     elif matches3 != None and matches3.lastindex == 1:
         return "{}".format(matches3.group(1))
     
@@ -40,7 +40,7 @@ def de(client_id, sentence):
     Returns:
       (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
     """
-    sentence = _remove_multi_quotes(sentence)
+    sentence = _change_multi_quotes(sentence)
 
     # TODO: Clean up de data
     return sentence
