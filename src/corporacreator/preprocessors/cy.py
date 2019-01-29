@@ -9,4 +9,9 @@ def cy(client_id, sentence):
       (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
     """
     # TODO: Clean up cy data
+    sentence = sentence.replace("’","'")
+    sentence = sentence.replace("wwna","wna")
+
+    sentence = sentence.replace("celsius","selsiws")
+
     return sentence
