@@ -11,8 +11,9 @@ def cy(client_id, sentence):
     # TODO: Clean up cy data
 
     # make sure all spaces are normal, single spaces
-    sentence = sentence.replace("’","'")
-    sentence = sentence.replace("wwna","wna")
+    sentence = sentence.replace("’", "'")
+    sentence = sentence.replace("wwna", "wna")
+    sentence = sentence.replace(" siwr ", " siŵr ")
     sentence = sentence.replace("\\\\tungellog","ungellog")
 
     # TODO: geiriau Saesneg / English inspired/pronunced words:
