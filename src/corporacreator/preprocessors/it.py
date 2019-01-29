@@ -8,5 +8,17 @@ def it(client_id, sentence):
     Returns:
       (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
     """
-    # TODO: Clean up it data
+    # this if loop will skip the following else loop in the case that
+    # the sentence is purely Italian characters as per https://github.com/
+    # unicode-cldr/cldr-misc-full/blob/master/main/it/characters.json
+    if set(list(sentence)).issubset(set([' ', 'a', 'à', 'b', 'c', 'd', 'e', 'é',
+                                         'è', 'f', 'g', 'h', 'i', 'ì', 'j', 'k',
+                                         'l', 'm', 'n', 'o', 'ó', 'ò', 'p', 'q',
+                                         'r', 's', 't', 'u', 'ù', 'v', 'w', 'x',
+                                         'y', 'z'])):
+        pass
+    else:
+        # TODO: Clean up italian data
+        pass
+    
     return sentence
