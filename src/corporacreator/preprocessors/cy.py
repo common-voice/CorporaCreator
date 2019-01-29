@@ -14,7 +14,8 @@ def cy(client_id, sentence):
     sentence = sentence.replace("’", "'")
     sentence = sentence.replace("wwna", "wna")
     sentence = sentence.replace(" siwr ", " siŵr ")
-    sentence = sentence.replace("\\\\tungellog","ungellog")
+    sentence = sentence.replace("\\tungellog"," ungellog")
+        
 
     # TODO: geiriau Saesneg / English inspired/pronunced words:
     # wallace, celsius, ddiesel, wicipedia, william, chiswell, f., h.
