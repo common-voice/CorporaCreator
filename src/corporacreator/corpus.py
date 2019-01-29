@@ -101,7 +101,7 @@ class Corpus:
 
         self.train = train.drop(columns="continous_client_index")
         self.dev = dev.drop(columns="continous_client_index")
-        self.test = test.drop(columns="continous_client_index")
+        self.test = test[:train_size].drop(columns="continous_client_index")
 
     def _calculate_data_set_sizes(self, total_size):
         # Find maximum size for the training data set in accord with sample theory
