@@ -8,5 +8,16 @@ def sl(client_id, sentence):
     Returns:
       (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
     """
-    # TODO: Clean up sl data
+    # this if loop will skip the following else loop in the case that
+    # the sentence is purely Slovenian characters as per https://github.com/
+    # unicode-cldr/cldr-misc-full/blob/master/main/sl/characters.json
+    if set(list(sentence)).issubset(set([' ', 'a', 'b', 'c', 'č', 'd', 'e', 'f',
+                                         'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+                                         'o', 'p', 'r', 's', 'š', 't', 'u', 'v',
+                                         'z', 'ž'])):
+        pass
+    else:
+        # TODO: Clean up slovenian data
+        pass
+    
     return sentence
