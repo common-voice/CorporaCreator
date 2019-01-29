@@ -6,5 +6,18 @@ def et(client_id, sentence):
     Returns:
       (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
     """
-    # TODO: Clean up en data
+    # this if loop will skip the following else loop in the case that
+    # the sentence is purely Estonian characters as per https://github.com/
+    # unicode-cldr/cldr-misc-full/blob/master/main/et/characters.json
+    if set(list(sentence)).issubset(set([' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
+                                         'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+                                         'p', 'q', 'r', 's', 'š', 'z', 'ž', 't',
+                                         'u', 'v', 'w', 'õ', 'ä', 'ö', 'ü', 'x',
+                                         'y'])):
+        pass
+    else:
+        pass
+        # TODO: Clean up estonian data
+
+    
     return sentence
