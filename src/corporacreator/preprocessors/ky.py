@@ -8,5 +8,16 @@ def ky(client_id, sentence):
     Returns:
       (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
     """
-    # TODO: Clean up ky data
+    # this if loop will skip the following else loop in the case that
+    # the sentence is purely Kyrgyz characters as per https://github.com/
+    # unicode-cldr/cldr-misc-full/blob/master/main/ky/characters.json
+    if set(list(sentence)).issubset(set([' ', 'а', 'б', 'г', 'д', 'е', 'ё', 'ж',
+                                         'з', 'и', 'й', 'к', 'л', 'м', 'н', 'ң',
+                                         'о', 'ө', 'п', 'р', 'с', 'т', 'у', 'ү',
+                                         'х', 'ч', 'ш', 'ъ', 'ы', 'э', 'ю',
+                                         'я'])):
+        pass
+    else:
+        # TODO: Clean up kyrgyz data
+        pass
     return sentence
