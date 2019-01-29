@@ -42,5 +42,17 @@ def de(client_id, sentence):
     """
     sentence = _change_multi_quotes(sentence)
 
+    # this if loop will skip the following else loop in the case that
+    # the sentence is purely Welsh characters as per https://github.com/
+    # unicode-cldr/cldr-misc-full/blob/master/main/de/characters.json
+    if set(list(sentence)).issubset(set([' ', 'a', 'ä', 'b', 'c', 'd', 'e', 'f',
+                                         'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+                                         'o', 'ö', 'p', 'q', 'r', 's', 'ß', 't',
+                                         'u', 'ü', 'v', 'w', 'x', 'y', 'z'])):
+        pass
+    else:
+        pass
+  
+    
     # TODO: Clean up de data
     return sentence
