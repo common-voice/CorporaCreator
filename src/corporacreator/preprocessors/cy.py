@@ -12,6 +12,12 @@ def cy(client_id, sentence):
 
     # make sure all spaces are normal, single spaces
     sentence = sentence.replace("’","'")
+    sentence = sentence.replace("wwna","wna")
+    sentence = sentence.replace("\\\\tungellog","ungellog")
+
+    # TODO: geiriau Saesneg / English inspired/pronunced words:
+    # wallace, celsius, ddiesel, wicipedia, william, chiswell, f., h.
+
     # this if loop will skip the following else loop in the case that
     # the sentence is purely Welsh characters as per https://github.com/
     # unicode-cldr/cldr-misc-full/blob/master/main/cy/characters.json
