@@ -75,7 +75,5 @@ def common(sentence):
     sentence = _strip_tags(sentence)
     # Remove non-printable characters
     sentence = _strip_string(sentence)
-    # collapse all whitespace and replace with single space
-    sentence = (' ').join(sentence.split())
     # TODO: Clean up data in a language independent manner
     return sentence
