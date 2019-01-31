@@ -9,5 +9,6 @@ def ky(client_id, sentence):
       (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
     """
     sentence = sentence.replace("•", "")
+    sentence = sentence.replace("ѳ", "ө")
     # TODO: ⅛, ИНН, КСДП, other abbreviations
     return sentence
