@@ -13,7 +13,6 @@ def cy(client_id, sentence):
     Args:
       client_id (str): Client ID of sentence's speaker
       sentence (str): Sentence to be cleaned up.
-      alphabet (set): set of unique, lowercased characters in language.
 
     Returns:
       (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
@@ -24,6 +23,7 @@ def cy(client_id, sentence):
     # this if loop will skip the following else loop in the case that
     # the sentence is purely Welsh characters as per https://github.com/
     # unicode-cldr/cldr-misc-full/blob/master/main/cy/characters.json
+    # alphabet is compiled at the beginning of this script
     if set(sentence.lower()).issubset(alphabet):
         pass
     else:
