@@ -58,12 +58,12 @@ class Corpus:
         self.other = self.corpus_data.loc[
             lambda df: (df.up_votes + df.down_votes) <= 1, :
         ]
-        self.valid = self.corpus_data.loc[
+        self.validated = self.corpus_data.loc[
             lambda df: (df.up_votes + df.down_votes > 1)
             & (df.up_votes > df.down_votes),
             :,
         ]
-        self.invalid = self.corpus_data.loc[
+        self.invalidated = self.corpus_data.loc[
             lambda df: (df.up_votes + df.down_votes > 1)
             & (df.up_votes <= df.down_votes),
             :,
@@ -71,34 +71,34 @@ class Corpus:
 
     def _post_process_valid_data(self):
         # Remove duplicate sentences while maintaining maximal user diversity at the frame's start (TODO: Make addition of user_sentence_count cleaner)
-        speaker_counts = self.valid["client_id"].value_counts()
+        speaker_counts = self.validated["client_id"].value_counts()
         speaker_counts = speaker_counts.to_frame().reset_index()
         speaker_counts.columns = ["client_id", "user_sentence_count"]
-        self.valid = self.valid.join(
+        self.validated = self.validated.join(
             speaker_counts.set_index("client_id"), on="client_id"
         )
-        self.valid = self.valid.sort_values(["user_sentence_count", "client_id"])
-        valid = self.valid.groupby("sentence").head(self.args.duplicate_sentence_count)
+        self.validated = self.validated.sort_values(["user_sentence_count", "client_id"])
+        validated = self.validated.groupby("sentence").head(self.args.duplicate_sentence_count)
         
-        valid = valid.sort_values(["user_sentence_count", "client_id"], ascending=False)
-        valid = valid.drop(columns="user_sentence_count")
-        self.valid = self.valid.drop(columns="user_sentence_count")
+        validated = validated.sort_values(["user_sentence_count", "client_id"], ascending=False)
+        validated = validated.drop(columns="user_sentence_count")
+        self.validated = self.validated.drop(columns="user_sentence_count")
         # Determine train, dev, and test sizes
-        train_size, dev_size, test_size = self._calculate_data_set_sizes(len(valid))
+        train_size, dev_size, test_size = self._calculate_data_set_sizes(len(validated))
         # Split into train, dev, and test datasets
-        continous_client_index, uniques = pd.factorize(valid["client_id"])
-        valid["continous_client_index"] = continous_client_index
-        train = pd.DataFrame(columns=valid.columns)
-        dev = pd.DataFrame(columns=valid.columns)
-        test = pd.DataFrame(columns=valid.columns)
+        continous_client_index, uniques = pd.factorize(validated["client_id"])
+        validated["continous_client_index"] = continous_client_index
+        train = pd.DataFrame(columns=validated.columns)
+        dev = pd.DataFrame(columns=validated.columns)
+        test = pd.DataFrame(columns=validated.columns)
 
         for i in range(max(continous_client_index), -1, -1):
-            if len(test) + len(valid[valid["continous_client_index"] == i]) <= test_size:
-                test = pd.concat([test, valid[valid["continous_client_index"] == i]])
-            elif len(dev) + len(valid[valid["continous_client_index"] == i]) <= dev_size:
-                dev = pd.concat([dev, valid[valid["continous_client_index"] == i]])
+            if len(test) + len(validated[validated["continous_client_index"] == i]) <= test_size:
+                test = pd.concat([test, validated[validated["continous_client_index"] == i]])
+            elif len(dev) + len(validated[validated["continous_client_index"] == i]) <= dev_size:
+                dev = pd.concat([dev, validated[validated["continous_client_index"] == i]])
             else:
-                train = pd.concat([train, valid[valid["continous_client_index"] == i]])
+                train = pd.concat([train, validated[validated["continous_client_index"] == i]])
 
         self.train = train.drop(columns="continous_client_index")
         self.dev = dev.drop(columns="continous_client_index")
@@ -123,7 +123,7 @@ class Corpus:
         directory = os.path.join(directory, self.locale)
         if not os.path.exists(directory):
             os.mkdir(directory)
-        datasets = ["other", "invalid", "valid", "train", "dev", "test"]
+        datasets = ["other", "invalidated", "validated", "train", "dev", "test"]
 
         _logger.debug("Saving %s corpora..." % self.locale)
         for dataset in datasets:
