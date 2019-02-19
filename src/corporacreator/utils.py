@@ -6,7 +6,7 @@ from num2words import num2words
 
 NUMS_REGEX = re.compile(r"(\d+,?\u00A0?\d+)|(\d+\w+)|(\d)+")
 FIND_MULTIPLE_SPACES_REG = re.compile(r'\s{2,}')
-FIND_PUNCTUATIONS_REG = re.compile(r"[/°\-,;!?.()\[\]*…—]")
+FIND_PUNCTUATIONS_REG = re.compile(r"[/°\-,;!?.()\[\]*…—«»]")
 
 
 def get_numbers(text):
