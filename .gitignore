@@ -47,3 +47,4 @@ MANIFEST
 
 # Per-project virtualenvs
 .virtualenv/
+.python-version
