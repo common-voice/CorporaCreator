@@ -24,6 +24,9 @@ from corporacreator import preprocessors
     ('fr', '*', "Nous parlons de CDI saisonnier", "nous parlons de c d i saisonnier"),
     ('fr', '*', "Nous nous accordons tous à dire que dix-huit milliards d’APL, ce n’est pas tenable.", "nous nous accordons tous à dire que dix huit milliards d'a p l ce n'est pas tenable"),
     ('fr', '*', "Quelques-uns seulement bénéficient du RSA.", "quelques uns seulement bénéficient du r s a"),
+    ('fr', '*', "Jean-Paul II.", "jean paul deux"),
+    ('fr', '*', "nº deux", "numéro deux"),
+    ('fr', '*', "Une capacité qui pourrait être équivalente à une production de 120 000T de poudre de lait /an.", "une capacité qui pourrait être équivalente à une production de cent vingt mille tonnes de poudre de lait par an"),
 ])
 def test_preprocessor(locale, client_id, sentence, expected):
     preprocessor = getattr(preprocessors, locale.replace('-', ''))
