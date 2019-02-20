@@ -71,4 +71,4 @@ def fr(client_id, sentence):
     text = replace_numbers(text, locale='fr', ordinal_regex=FIND_ORDINAL_REG)
     text = FIND_PUNCTUATIONS_REG.sub(' ', text)
     text = FIND_MULTIPLE_SPACES_REG.sub(' ', text)
-    return text.strip().lower()
+    return text.strip()
