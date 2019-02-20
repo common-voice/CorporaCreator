@@ -37,9 +37,6 @@ REPLACE_SPELLED_ACRONYMS = [
 
 FR_NORMALIZATIONS = [
     ['Jean-Paul II', 'Jean-Paul deux'],
-    ['%2C', ','],  # url encoding
-    ['%3A', ':'],  # url encoding
-    ['%3F', '?'],  # url encoding
     [re.compile(r'(^|\s)(\d+)T(\s|\.|,|\?|!|$)'), r'\1\2 tonnes\3'],
     [re.compile(r'(^|\s)/an(\s|\.|,|\?|!|$)'), r'\1par an\2'],
     [re.compile(r'(^|\s)(\d+)\s(0{3})(\s|\.|,|\?|!|$)'), r'\1\2\3\4'],  # "123 000 …" => "123000 …"
