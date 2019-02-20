@@ -41,11 +41,11 @@ def replace_numbers(inp: str, locale: str, ordinal_regex: Pattern = None):
 
 def maybe_normalize(value: str, mapping):
     for norm in mapping:
-        if type(norm[0]) == str:
+        if isinstance(norm[0], str):
             value = value.replace(norm[0], norm[1])
         elif isinstance(norm[0], Pattern):
             value = norm[0].sub(norm[1], value)
         else:
-            print('UNEXPECTED', type(norm[0]), norm[0])
+            raise ValueError(f'expect first parameter to be a string or a regex, not {norm[0]}')
 
     return value
