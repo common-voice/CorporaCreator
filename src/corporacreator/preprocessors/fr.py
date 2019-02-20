@@ -4,13 +4,36 @@ from corporacreator.utils import maybe_normalize, replace_numbers, FIND_PUNCTUAT
 
 FIND_ORDINAL_REG = re.compile(r"(\d+)([ème|éme|ieme|ier|iere]+)")
 
-SPELLED_ACRONYMS = [
-    [
-        re.compile(r'(^|\s|\'|’)(' + a + r')(\s|\.|,|\?|!|$)'),
-        lambda match: f"{match.group(1)}{' '.join(match.group(2))}{match.group(3)}",
-    ]
-    for a in {'CICE', 'TVA', 'USA', 'ANPE', 'UMP', 'ISF', 'CDI', 'APL', 'RSA'}
+SPELLED_ACRONYMS = {
+    'ANPE',
+    'APL',
+    'CDI',
+    'CICE',
+    'DRH',
+    'EDF',
+    'HLM',
+    'IGN',
+    'INPI',
+    'ISF',
+    'IUT',
+    'PHP',
+    'PMA',
+    'PME',
+    'RSA',
+    'RSI',
+    'RTE',
+    'SNCF',
+    'TGV',
+    'TVA',
+    'UDI',
+    'UMP',
+    'USA',
+}
+REPLACE_SPELLED_ACRONYMS = [
+    re.compile(r'(^|\s|\'|’)(' + '|'.join(SPELLED_ACRONYMS) + r')(\s|\.|,|\?|!|$)'),
+    lambda match: f"{match.group(1)}{' '.join(match.group(2))}{match.group(3)}",
 ]
+
 
 FR_NORMALIZATIONS = [
     ['Jean-Paul II', 'Jean-Paul deux'],
@@ -46,7 +69,7 @@ def fr(client_id, sentence):
     Returns:
       (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
     """
-    text = maybe_normalize(sentence, mapping=FR_NORMALIZATIONS + SPELLED_ACRONYMS)
+    text = maybe_normalize(sentence, mapping=FR_NORMALIZATIONS + [REPLACE_SPELLED_ACRONYMS])
     text = replace_numbers(text, locale='fr', ordinal_regex=FIND_ORDINAL_REG)
     text = text.replace('’', "'").replace('\u00A0', ' ')
     text = FIND_PUNCTUATIONS_REG.sub(' ', text)
