@@ -69,7 +69,6 @@ def fr(client_id, sentence):
     """
     text = maybe_normalize(sentence, mapping=FR_NORMALIZATIONS + [REPLACE_SPELLED_ACRONYMS])
     text = replace_numbers(text, locale='fr', ordinal_regex=FIND_ORDINAL_REG)
-    text = text.replace('’', "'").replace('\u00A0', ' ')
     text = FIND_PUNCTUATIONS_REG.sub(' ', text)
     text = FIND_MULTIPLE_SPACES_REG.sub(' ', text)
     return text.strip().lower()
