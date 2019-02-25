@@ -1,7 +1,14 @@
+import re
 import unicodedata
 
 from urllib.parse import unquote
 from html.parser import HTMLParser
+
+
+RE_DIGITS = re.compile('\d')
+
+def _has_digit(sentence):
+    return RE_DIGITS.search(sentence)
 
 
 class _HTMLStripper(HTMLParser):
@@ -66,9 +73,11 @@ def common(sentence):
       sentence (str): Sentence to be cleaned up.
 
     Returns:
-      (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
+      (is_valid,str): A boolean indicating validity and cleaned up sentence.
     """
 
+    # Define a boolean indicating validity
+    is_valid = True
     # Decode any URL encoded elements of sentence
     sentence = unquote(sentence)
     # Remove any HTML tags
@@ -78,4 +87,10 @@ def common(sentence):
     # collapse all whitespace and replace with single space
     sentence = (' ').join(sentence.split())
     # TODO: Clean up data in a language independent manner
-    return sentence
+    # If the sentence contains digits reject it
+    if _has_digit(sentence):
+        is_valid = False
+    # If the sentence is blank reject it
+    if not sentence.strip():
+        is_valid = False
+    return (is_valid, sentence)
