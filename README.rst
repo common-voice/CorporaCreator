@@ -135,7 +135,7 @@ The language independent cleaning is done by the ``common()`` method in `common.
         Args:
           sentence (str): Sentence to be cleaned up.
         Returns:
-          (is_valid,str): A boolean indicating validity and cleaned up sentence.
+          (boolean,str): A boolean indicating validity and cleaned up sentence.
         """
         ...
         # Clean sentence in a language independent manner
