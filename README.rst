@@ -131,24 +131,22 @@ The language independent cleaning is done by the ``common()`` method in `common.
 ::
 
     def common(sentence):
-        """Cleans up the passed sentence in a language independent manner, removing or reformatting
-           invalid data.
+        """Cleans up the passed sentence in a language independent manner, removing or reformatting invalid data.
         Args:
           sentence (str): Sentence to be cleaned up.
         Returns:
-          (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as
-                 invalid.
+          (is_valid,str): A boolean indicating validity and cleaned up sentence.
         """
         ...
         # Clean sentence in a language independent manner
         ...
-        return sentence
+        return is_valid, sentence
 
-This method is input the sentence to clean, cleans the sentence in a language independent manner, and returns the cleaned sentence.
+This method is input the sentence to clean, cleans the sentence in a language independent manner, and returns the cleaned sentence along with a boolean indicating its validity.
 
-If the sentence is not able to be cleaned, e.g. it consisted only of HTML fragments, this method can return ``None`` or a string containing only whitespace to indicate the sentence was invalid to begin with.
+If the sentence is not able to be cleaned, e.g. it consisted only of HTML fragments, this method can return is_valid set to False.
 
-Currently `common.py`_ decodes any URL encoded elements of sentence, removes any HTML tags in a sentence, and removes any non-printable characters in a sentence, in that order. (For the details refer to `common.py`_ .) This seems to catch most language independent problems, but if you see more, please open an issue or make a pull request.
+Currently `common.py`_ decodes any URL encoded elements of sentence, removes any HTML tags in a sentence, removes any non-printable characters in a sentence, and marks as invalid any sentence containing digits, in that order. (For the details refer to `common.py`_ .) This seems to catch most language independent problems, but if you see more, please open an issue or make a pull request.
 
 
 Language Dependent Cleaning
@@ -241,8 +239,8 @@ To actually hear the audio, you have to request the audio from Mozilla. (See the
 Once you have obtained the audio, you can hear the audio for a given sentence and client_id pair by finding the row corresponding to the sentence + client_id pair in ``clips.tsv``, finding the ``path`` in that row, then playing the file corresponding to the row's ``path`` in the downloaded audio.
 
 
-Digits
-``````
+Valid Variant Readings
+``````````````````````
 
 Suppose you found that one, or more English sentences used the text "room 4025". Some people may have read "room 4025" as "room four oh two five", some as "room four zero two five", some in a completely different way. Again, to determine which way the digits were read, you have to hear the audio for each reading and write code that handles each contributor individually.
 
