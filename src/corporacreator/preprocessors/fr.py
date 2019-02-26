@@ -1,8 +1,7 @@
 import re
 
-from corporacreator.utils import maybe_normalize, replace_numbers, FIND_MULTIPLE_SPACES_REG
+from corporacreator.utils import maybe_normalize, FIND_MULTIPLE_SPACES_REG
 
-FIND_ORDINAL_REG = re.compile(r"(\d+)([ème|éme|ieme|ier|iere]+)")
 
 SPELLED_ACRONYMS = {
     'ANPE',
@@ -68,7 +67,6 @@ def fr(client_id, sentence):
       (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
     """
     text = maybe_normalize(sentence, mapping=FR_NORMALIZATIONS + [REPLACE_SPELLED_ACRONYMS])
-    text = replace_numbers(text, locale='fr', ordinal_regex=FIND_ORDINAL_REG)
     # TODO: restore this once we are clear on which punctuation marks should be kept or removed
     # text = FIND_PUNCTUATIONS_REG.sub(' ', text)
     text = FIND_MULTIPLE_SPACES_REG.sub(' ', text)

@@ -31,4 +31,7 @@ from corporacreator import preprocessors
 ])
 def test_preprocessor(locale, client_id, sentence, expected):
     preprocessor = getattr(preprocessors, locale.replace('-', ''))
-    assert expected == preprocessor(client_id, preprocessors.common(sentence))
+    is_valid, sentence = preprocessors.common(sentence)
+    if not is_valid:
+        pytest.skip('not supported right now (see https://github.com/mozilla/CorporaCreator/pull/87#issuecomment-466296310 for more info)')
+    assert expected == preprocessor(client_id, sentence)
