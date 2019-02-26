@@ -8,6 +8,7 @@ from corporacreator import preprocessors
     ('fr', '*', "bah 98%", "bah quatre-vingt-dix-huit pourcent"),
     ('fr', '*', "prix au m2", "prix au mètre carré"),
     ('fr', '*', "prix au m²", "prix au mètre carré"),
+    ('fr', '*', "prix /m²", "prix par mètre carré"),
     ('fr', '*', "10 m²", "dix mètre carré"),
     ('fr', '*', "2éme page", "deuxième page"),
     ('fr', '*', "donc, ce sera 299 € + 99 €", "donc, ce sera deux cent quatre-vingt-dix-neuf euros plus quatre-vingt-dix-neuf euros"),

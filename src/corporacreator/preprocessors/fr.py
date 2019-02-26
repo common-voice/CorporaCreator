@@ -36,23 +36,15 @@ REPLACE_SPELLED_ACRONYMS = [
 
 FR_NORMALIZATIONS = [
     ['Jean-Paul II', 'Jean-Paul deux'],
-    [re.compile(r'(^|\s)(\d+)T(\s|\.|,|\?|!|$)'), r'\1\2 tonnes\3'],
     [re.compile(r'(^|\s)/an(\s|\.|,|\?|!|$)'), r'\1par an\2'],
-    [re.compile(r'(^|\s)(\d+)\s(0{3})(\s|\.|,|\?|!|$)'), r'\1\2\3\4'],  # "123 000 …" => "123000 …"
     [re.compile(r'(^|\s)km(\s|\.|,|\?|!|$)'), r'\1 kilomètres \2'],
-    [re.compile(r'(^|\s)0(\d)(\s|\.|,|\?|!|$)'), r'\1zéro \2 \3'],
     ['%', ' pourcent'],
     [re.compile(r'(^|\s)\+(\s|\.|,|\?|!|$)'), r'\1 plus \2'],
-    [re.compile(r'(\d+)\s?m(?:2|²)(\s|\.|,|\?|!|$)'), r'\1 mètre carré\2'],
     [re.compile(r'(^|\s)m(?:2|²)(\s|\.|,|\?|!|$)'), r'\1mètre carré\2'],
     [re.compile(r'/\s?m(?:2|²)(\s|\.|,|\?|!|$)'), r' par mètre carré\1'],
-    [re.compile(r'(^|\s)(\d+),(\d{2})\s?€(\s|\.|,|\?|!|$)'), r'\1\2 euros \3 \4'],
     [re.compile(r'\s?€(.+)'), r' euros\1'],
     [re.compile(r'\s?€$'), r' euros'],
     [re.compile(r'(^| )(n)(?:°|º|°)(\s)?', flags=re.IGNORECASE), r'\1\2uméro '],
-    [re.compile(r'(^|\s)(\d+)h(\d*)(\s|\.|,|$)'), r'\1\2 heure \3\4'],
-    [re.compile(r'(^|\s)(\d+)\s?h\s?(\d*)(\s|\.|,|$)'), r'\1\2 heure \3\4'],
-    [re.compile(r'(^|\s)(\d+)h(\s|\.|,|$)'), r'\1\2 heure \3'],
 ]
 
 
