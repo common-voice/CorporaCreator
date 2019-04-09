@@ -7,8 +7,11 @@ from .cv import cv
 from .cy import cy
 from .de import de
 from .en import en
+from .es import es
 from .et import et
+from .eu import eu
 from .eo import eo
+from .fa import fa
 from .fr import fr
 from .gaIE import gaIE
 from .it import it
