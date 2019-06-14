@@ -24,6 +24,7 @@ def fr(client_id, sentence):
       (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
     """
     # TODO: Clean up fr data
-
     sentence = FILTER_SYMBOLES_REG.sub('', sentence)
+    if EXCLUDE_ABBREVIATION_REG.search(sentence) is not None:
+        return None
     return sentence
