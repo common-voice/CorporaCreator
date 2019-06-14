@@ -6,8 +6,6 @@ from html.parser import HTMLParser
 
 
 RE_DIGITS = re.compile('\d')
-#All Special characters
-FILTER_SYMBOLES_REG = re.compile( r'[\{\}\[\]«»_\|\(\)\\…(^—)=&\-*/µ#’@℗`~¹½¼¾¿º±↨↑↓▼→▲←↔∟§°‼¸‰‘¶“”•—´☺☻♥♦♠♣•◘○◙♂►♀☼♫♪¢¦Ξ≈˜†√ƒοΔδΛΓκιςζυσρΣγτθΘφΦηχξβωγΩΨ◊░▒▓│├╚┼┬┴└┐┤╝╗╬╣║ßÞ═™›³ª¯¬®]+' )
 
 def _has_digit(sentence):
     return RE_DIGITS.search(sentence)
@@ -89,7 +87,6 @@ def common(sentence):
     # collapse all whitespace and replace with single space
     sentence = (' ').join(sentence.split())
     # TODO: Clean up data in a language independent manner
-    sentence=FILTER_SYMBOLES_REG.sub('', sentence)
     # If the sentence contains digits reject it
     if _has_digit(sentence):
         is_valid = False
