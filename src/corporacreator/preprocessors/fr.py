@@ -11,8 +11,6 @@ FILTER_SYMBOLES_REG = re.compile(
 # Detect abreviation ex: TVA, T V A
 EXCLUDE_ABBREVIATION_REG = re.compile(r'([A-Z]){2,3}|(( [A-Z] )( ?[A-Z]){1, })')
 
-
-
 def fr(client_id, sentence):
     """Cleans up the passed sentence, removing or reformatting invalid data.
 
