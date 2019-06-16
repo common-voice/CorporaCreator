@@ -1,3 +1,19 @@
+import re
+
+# All special characters
+FILTER_SYMBOLES_REG = re.compile(
+    r'[\{\}\[\]«»_:\|\(\)\\…"(^—)=&\ô*'
+    r'/µ#@℗`~¹½¼¾¿º±↨↑↓▼→▲←↔∟§°‼¸‰'
+    r'‘¶“”•—´☺☻♥♦♠♣•◘○◙♂►♀☼♫♪¢¦Ξ≈˜†'
+    r'√ƒοΔδΛΓκιςζυσρΣγτθΘφΦηχξβωγΩΨ◊░▒▓'
+    r'│├╚┼┬┴└┐┤╝╗╬╣║ßÞ═™›³ª¯¬®]+|( \-)|(\- )')
+
+
+# Detect abreviation ex: TVA, T V A
+EXCLUDE_ABBREVIATION_REG = re.compile(r'([A-Z]){2,3}|(( [A-Z] )( ?[A-Z]){1, })|([A-Z][.]+)|( [A-Z] )')
+
+
+
 def fr(client_id, sentence):
     """Cleans up the passed sentence, removing or reformatting invalid data.
 
@@ -9,4 +25,7 @@ def fr(client_id, sentence):
       (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
     """
     # TODO: Clean up fr data
+    sentence = FILTER_SYMBOLES_REG.sub('', sentence)
+    if EXCLUDE_ABBREVIATION_REG.search(sentence) is not None:
+        return None
     return sentence
