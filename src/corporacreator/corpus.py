@@ -7,6 +7,13 @@ import corporacreator.preprocessors as preprocessors
 
 import swifter
 import pandas as pd
+import boto3
+from botocore.client import Config
+
+#S3_Configuration:
+ACCESS_KEY_ID = ''
+ACCESS_SECRET_KEY = ''
+BUCKET_NAME = ''
 
 _logger = logging.getLogger(__name__)
 
@@ -21,7 +28,7 @@ class Corpus:
 
     Attributes:
         args ([str]): Command line parameters as list of strings
-        locale (str): Locale of this :class:`corporacreator.Corpus` 
+        locale (str): Locale of this :class:`corporacreator.Corpus`
         corpus_data (:class:`pandas.DataFrame`): `pandas.DataFrame` Containing the corpus data
     """
 
@@ -56,18 +63,18 @@ class Corpus:
 
     def _partition_corpus_data(self):
         self.other = self.corpus_data.loc[
-            lambda df: (df.up_votes + df.down_votes) <= 1, :
-        ]
+                     lambda df: (df.up_votes + df.down_votes) <= 1, :
+                     ]
         self.validated = self.corpus_data.loc[
-            lambda df: (df.up_votes + df.down_votes > 1)
-            & (df.up_votes > df.down_votes),
-            :,
-        ]
+                         lambda df: (df.up_votes + df.down_votes > 1)
+                                    & (df.up_votes > df.down_votes),
+                         :,
+                         ]
         self.invalidated = self.corpus_data.loc[
-            lambda df: (df.up_votes + df.down_votes > 1)
-            & (df.up_votes <= df.down_votes),
-            :,
-        ]
+                           lambda df: (df.up_votes + df.down_votes > 1)
+                                      & (df.up_votes <= df.down_votes),
+                           :,
+                           ]
 
     def _post_process_valid_data(self):
         # Remove duplicate sentences while maintaining maximal user diversity at the frame's start (TODO: Make addition of user_sentence_count cleaner)
@@ -79,7 +86,7 @@ class Corpus:
         )
         self.validated = self.validated.sort_values(["user_sentence_count", "client_id"])
         validated = self.validated.groupby("sentence").head(self.args.duplicate_sentence_count)
-        
+
         validated = validated.sort_values(["user_sentence_count", "client_id"], ascending=False)
         validated = validated.drop(columns="user_sentence_count")
         self.validated = self.validated.drop(columns="user_sentence_count")
@@ -136,3 +143,37 @@ class Corpus:
         dataframe.to_csv(
             path, sep="\t", header=True, index=False, encoding="utf-8", escapechar='\\', quoting=csv.QUOTE_NONE
         )
+
+    def uploadAWS(self, directory):
+        """Upload this :class:`corporacreator.Corpus` in AWS S3 STORAGE `directory`.
+
+        Args:
+            directory (str): Directory into which this `corporacreator.Corpus` is saved.
+        """
+        delimiter = "/"
+        directory = delimiter.join((directory, self.locale))
+        datasets = ["other", "invalidated", "validated", "train", "dev", "test"]
+        _logger.debug("Uploading %s corpora..." % self.locale)
+        for dataset in datasets:
+            self._uploadAWS(directory, dataset)
+        _logger.debug("Uploaded %s corpora." % self.locale)
+
+    def _uploadAWS(self, directory, dataset):
+        delimiter = "/"
+        path = delimiter.join((directory, dataset + ".tsv"))
+        # READ FILE
+        data = open(path, 'rb')
+        # AWS S3 STORAGE CONFIGURE
+        s3 = boto3.resource(
+            's3',
+            aws_access_key_id=ACCESS_KEY_ID,
+            aws_secret_access_key=ACCESS_SECRET_KEY,
+            config=Config(signature_version='s3v4')
+        )
+        # UPLOAD FILE
+        s3.Bucket(BUCKET_NAME).put_object(Key=path, Body=data, ACL='public-read')
+
+
+
+
+

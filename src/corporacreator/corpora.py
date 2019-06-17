@@ -52,7 +52,7 @@ class Corpora:
                 raise argparse.ArgumentTypeError("ERROR: You have requested languages which do not exist in clips.tsv")
         else:
             locales = corpora_data.locale.unique()
-            
+
         for locale in locales:
             _logger.info("Selecting %s corpus data..." % locale)
             corpus_data = corpora_data.loc[
@@ -105,3 +105,8 @@ class Corpora:
             corpus.save(directory)
             _logger.info("Saved %s corpus." % corpus.locale)
         _logger.info("Saved corpora.")
+        for corpus in self.corpora:
+            _logger.info("uploiding %s corpus..." % corpus.locale)
+            corpus.uploadAWS(directory)
+            _logger.info("uploided %s corpus." % corpus.locale)
+        _logger.info("uploided corpora.")
