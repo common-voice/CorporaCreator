@@ -106,7 +106,7 @@ class Corpora:
             _logger.info("Saved %s corpus." % corpus.locale)
         _logger.info("Saved corpora.")
         for corpus in self.corpora:
-            _logger.info("uploiding %s corpus..." % corpus.locale)
+            _logger.info("uploading %s corpus..." % corpus.locale)
             corpus.uploadAWS(directory)
-            _logger.info("uploided %s corpus." % corpus.locale)
-        _logger.info("uploided corpora.")
+            _logger.info("uploaded %s corpus." % corpus.locale)
+        _logger.info("uploaded corpora.")
