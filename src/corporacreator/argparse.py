@@ -24,6 +24,17 @@ def _check_positive(value):
     return ivalue
 
 
+def _check_boolean(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
+
 def parse_args(args):
     """Parse command line parameters
 
@@ -88,5 +99,14 @@ def parse_args(args):
         type=_check_positive,
         help="Maximum number of times a sentence can appear in a corpus.",
         dest="duplicate_sentence_count",
+    )
+    parser.add_argument(
+        "-c",
+        "--check-for-digits",
+        default=True,
+        required=False,
+        type=_check_boolean,
+        help="Check sentences for digits",
+        dest="check_for_digits",
     )
     return parser.parse_args(args)
