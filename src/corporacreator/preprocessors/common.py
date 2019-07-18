@@ -66,7 +66,7 @@ def _strip_string(sentence):
     return u''.join([c for c in sentence if unicodedata.category(c) in allowed_categories])
 
 
-def common(sentence):
+def common(sentence, check_for_digits):
     """Cleans up the passed sentence in a language independent manner, removing or reformatting invalid data.
 
     Args:
@@ -88,7 +88,7 @@ def common(sentence):
     sentence = (' ').join(sentence.split())
     # TODO: Clean up data in a language independent manner
     # If the sentence contains digits reject it
-    if _has_digit(sentence):
+    if check_for_digits and _has_digit(sentence):
         is_valid = False
     # If the sentence is blank reject it
     if not sentence.strip():

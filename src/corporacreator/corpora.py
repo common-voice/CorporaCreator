@@ -12,9 +12,9 @@ import argparse
 _logger = logging.getLogger(__name__)
 
 
-def common_wrapper(sentence, up_votes, down_votes):
-    is_valid, sentence = common(sentence)
-    if False == is_valid:
+def common_wrapper(sentence, up_votes, down_votes, check_for_digits):
+    is_valid, sentence = common(sentence, check_for_digits)
+    if not is_valid:
         up_votes = 0
         down_votes = 2
     return pd.Series([sentence, up_votes, down_votes])
@@ -42,7 +42,7 @@ class Corpora:
         corpora_data = self._parse_tsv()
         corpora_data[["sentence", "up_votes", "down_votes"]] = corpora_data[
             ["sentence", "up_votes", "down_votes"]
-        ].swifter.apply(func=lambda arg: common_wrapper(*arg), axis=1)
+        ].swifter.apply(func=lambda arg: common_wrapper(*arg, self.args.check_for_digits), axis=1)
         if self.args.langs:
             # check if all languages provided at command line are actually
             # in the clips.tsv file, if not, throw error
