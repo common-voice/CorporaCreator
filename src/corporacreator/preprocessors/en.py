@@ -8,6 +8,8 @@ def en(client_id, sentence):
     Returns:
       (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
     """
+    if client_id == "f2909ec9143e4ff4792b0ccb2e109da938c1c5bfc91641165b0fd32f6caf67ad234318233affcaa4117a36212440eae89dbf06c75e2cb9d4a19ddec3663044ac":
+        sentence = sentence.replace("=", "equal to")
     if client_id == "3c8f07827758e9ce8070ed287139d6d3e6457c1c16dcb972edac76c4d4333dc9e9c428711237e2b34fa29f4d249287fd238ac884534e33075958233643bbd0a1":
         sentence = sentence.replace("C++", "C plus plus")
     ## collapse all apostrophe-like marks
