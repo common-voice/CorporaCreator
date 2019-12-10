@@ -44,9 +44,12 @@ class Corpus:
             ["client_id", "sentence", "up_votes", "down_votes"]
         ].swifter.apply(func=lambda arg: self._preprocessor_wrapper(*arg), axis=1)
 
+    def _preprocessor_default(self, client_id, sentence):
+        return sentence
+
     def _preprocessor_wrapper(self, client_id, sentence, up_votes, down_votes):
         preprocessor = getattr(
-            preprocessors, self.locale.replace("-", "")
+            preprocessors, self.locale.replace("-", ""), self._preprocessor_default
         )  # Get locale specific preprocessor
         sentence = preprocessor(client_id, sentence)
         if None == sentence or not sentence.strip():
@@ -79,30 +82,32 @@ class Corpus:
         )
         self.validated = self.validated.sort_values(["user_sentence_count", "client_id"])
         validated = self.validated.groupby("sentence").head(self.args.duplicate_sentence_count)
-        
+
         validated = validated.sort_values(["user_sentence_count", "client_id"], ascending=False)
         validated = validated.drop(columns="user_sentence_count")
         self.validated = self.validated.drop(columns="user_sentence_count")
-        # Determine train, dev, and test sizes
-        train_size, dev_size, test_size = self._calculate_data_set_sizes(len(validated))
-        # Split into train, dev, and test datasets
-        continous_client_index, uniques = pd.factorize(validated["client_id"])
-        validated["continous_client_index"] = continous_client_index
-        train = pd.DataFrame(columns=validated.columns)
-        dev = pd.DataFrame(columns=validated.columns)
-        test = pd.DataFrame(columns=validated.columns)
 
-        for i in range(max(continous_client_index), -1, -1):
-            if len(test) + len(validated[validated["continous_client_index"] == i]) <= test_size:
-                test = pd.concat([test, validated[validated["continous_client_index"] == i]])
-            elif len(dev) + len(validated[validated["continous_client_index"] == i]) <= dev_size:
-                dev = pd.concat([dev, validated[validated["continous_client_index"] == i]])
-            else:
-                train = pd.concat([train, validated[validated["continous_client_index"] == i]])
+        if (len(validated) > 0):
+            # Determine train, dev, and test sizes
+            train_size, dev_size, test_size = self._calculate_data_set_sizes(len(validated))
+            # Split into train, dev, and test datasets
+            continous_client_index, uniques = pd.factorize(validated["client_id"])
+            validated["continous_client_index"] = continous_client_index
+            train = pd.DataFrame(columns=validated.columns)
+            dev = pd.DataFrame(columns=validated.columns)
+            test = pd.DataFrame(columns=validated.columns)
 
-        self.train = train.drop(columns="continous_client_index")
-        self.dev = dev.drop(columns="continous_client_index")
-        self.test = test[:train_size].drop(columns="continous_client_index")
+            for i in range(max(continous_client_index), -1, -1):
+                if len(test) + len(validated[validated["continous_client_index"] == i]) <= test_size:
+                    test = pd.concat([test, validated[validated["continous_client_index"] == i]])
+                elif len(dev) + len(validated[validated["continous_client_index"] == i]) <= dev_size:
+                    dev = pd.concat([dev, validated[validated["continous_client_index"] == i]])
+                else:
+                    train = pd.concat([train, validated[validated["continous_client_index"] == i]])
+
+            self.train = train.drop(columns="continous_client_index")
+            self.dev = dev.drop(columns="continous_client_index")
+            self.test = test[:train_size].drop(columns="continous_client_index")
 
     def _calculate_data_set_sizes(self, total_size):
         # Find maximum size for the training data set in accord with sample theory
@@ -132,7 +137,10 @@ class Corpus:
 
     def _save(self, directory, dataset):
         path = os.path.join(directory, dataset + ".tsv")
-        dataframe = getattr(self, dataset)
-        dataframe.to_csv(
-            path, sep="\t", header=True, index=False, encoding="utf-8", escapechar='\\', quoting=csv.QUOTE_NONE
-        )
+        try:
+            dataframe = getattr(self, dataset)
+            dataframe.to_csv(
+                path, sep="\t", header=True, index=False, encoding="utf-8", escapechar='\\', quoting=csv.QUOTE_NONE
+            )
+        except AttributeError:
+            _logger.error(AttributeError)
