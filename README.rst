@@ -152,9 +152,9 @@ Currently `common.py`_ decodes any URL encoded elements of sentence, removes any
 Language Dependent Cleaning
 ``````````````````````````````
 
-In addition to the language independent plugin `common.py`_  ``create-corpora`` has a plugin for each language in the alpha ``clips.tsv`` release. Each one of these plugins is responsible for cleaning the sentences in its corresponding language. So, for example, there is a plugin `en.py`_ for English that is responsible for cleaning the English sentences.
+In addition to the language independent plugin `common.py`_  ``create-corpora`` can also support language-dependent cleaning. In order to add language-dependent cleaning, create a plugin named `LOCALE.py` in the `preprocessors` folder with a function definition also named `LOCALE`, where `LOCALE` is whatever ISO language-code is. NOTE: hyphens are not supported, so something like `zh-TW` would be named `zhTW.py`.
 
-The language dependent cleaning is done by an appropriately named method in the language's plugin. So, for example, the cleaning for English is done by the ``en()`` method in `en.py`_:
+For example, the cleaning for English would be done by the ``en()`` method in a file named `en.py`_:
 
 ::
 
@@ -169,7 +169,7 @@ The language dependent cleaning is done by an appropriately named method in the 
         # TODO: Clean up en data
         return sentence
 
-This method is input the sentence to clean along with the client_id of the contributor who read the sentence. It then cleans the sentence in a language dependent manner and returns the cleaned sentence.
+This method accepts the sentence to clean along with the client_id of the contributor who read the sentence. It then cleans the sentence in a language dependent manner and returns the cleaned sentence. For a more complex example of what this could look like, refer to `preprocessors/de.py`.
 
 If the sentence is not able to be cleaned, e.g. it is so mangled that it is impossible to determine how to correct it to a valid English sentence, this method can return ``None`` or a string containing only whitespace to indicate the sentence was invalid to begin with.
 
