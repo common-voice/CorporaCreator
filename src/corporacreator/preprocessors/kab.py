@@ -2,7 +2,6 @@
 
 import string
 
-
 """
 Keep Upper case
 Keep Punctuation
@@ -14,10 +13,8 @@ Strip
 Unvalidate sentences containing not allowed characters
 """
 
-
 allowed = list(string.ascii_lowercase)
 allowed.extend(list("ẓṛṭɛṣḍǧḥɣč"))
-
 
 majuscule = []
 
@@ -25,8 +22,6 @@ for i in allowed:
     majuscule.append(i.upper())
 
 allowed.extend(list(majuscule))
-
-print(allowed)
 
 replacer = {
     "Ğ": "Ǧ",
@@ -64,19 +59,16 @@ for all, replacement in replacer.items():
     for to_replace in all:
         replacements[to_replace] = replacement
 
-
 def remplaceSymbols(word):
     result = word
     for to_replace, replacement in replacements.items():
         result = result.replace(to_replace, replacement)
     return result
 
-
 def removeBadSpace(sentence):
     sentence = sentence.replace(" -", "-")
     sentence = sentence.replace("- ", "-")
     return sentence
-
 
 def replaceTs(word):
     if word.endswith("ţţ"):
@@ -94,7 +86,6 @@ def checkSentence (sentence):
         if i  not in allowed and i not in punctuation:
                return False
     return True
-
 
 def cleanSentence(sentence):
 
@@ -127,5 +118,5 @@ def kab(client_id, sentence):
       (str): Cleaned up sentence. Returning None or a `str` of whitespace flags the sentence as invalid.
     """
     # TODO: Clean up kab data
-    sentence = tc.cleanSentence(sentence)
+    sentence = cleanSentence(sentence)
     return sentence
