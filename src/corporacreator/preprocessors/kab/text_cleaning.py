@@ -1,21 +1,17 @@
 # created by Mestafa Kamal
 
 import string
-import collections
 
 
 """
 Keep Upper case
 Keep Punctuation
 
-
 Replace wrong characters
 Remove bad spaces
+
 Strip
-
 Unvalidate sentences containing not allowed characters
-
-
 """
 
 
@@ -117,5 +113,5 @@ def cleanSentence(sentence):
 
     if (checkSentence(result)==False):
         return " "
-
+        
     return result
