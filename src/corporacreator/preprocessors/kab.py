@@ -1,4 +1,7 @@
-import kab/text_cleaning as tc
+import sys
+sys.path.append("./kab/")
+
+import text_cleaning as tc
 
 def kab(client_id, sentence):
     """Cleans up the passed sentence, removing or reformatting invalid data.
