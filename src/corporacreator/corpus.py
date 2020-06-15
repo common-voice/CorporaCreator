@@ -21,7 +21,7 @@ class Corpus:
 
     Attributes:
         args ([str]): Command line parameters as list of strings
-        locale (str): Locale of this :class:`corporacreator.Corpus` 
+        locale (str): Locale of this :class:`corporacreator.Corpus`
         corpus_data (:class:`pandas.DataFrame`): `pandas.DataFrame` Containing the corpus data
     """
 
@@ -52,7 +52,7 @@ class Corpus:
             preprocessors, self.locale.replace("-", ""), self._preprocessor_default
         )  # Get locale specific preprocessor
         sentence = preprocessor(client_id, sentence)
-        if None == sentence or not sentence.strip():
+        if sentence is None or not sentence.strip():
             up_votes = 0
             down_votes = 2
         return pd.Series([sentence, up_votes, down_votes])

@@ -14,7 +14,7 @@ _logger = logging.getLogger(__name__)
 
 def common_wrapper(sentence, up_votes, down_votes):
     is_valid, sentence = common(sentence)
-    if False == is_valid:
+    if is_valid is False:
         up_votes = 0
         down_votes = 2
     return pd.Series([sentence, up_votes, down_votes])
@@ -52,7 +52,7 @@ class Corpora:
                 raise argparse.ArgumentTypeError("ERROR: You have requested languages which do not exist in clips.tsv")
         else:
             locales = corpora_data.locale.unique()
-            
+
         for locale in locales:
             _logger.info("Selecting %s corpus data..." % locale)
             corpus_data = corpora_data.loc[
