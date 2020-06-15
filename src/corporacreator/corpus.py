@@ -59,7 +59,8 @@ class Corpus:
 
     def _partition_corpus_data(self):
         self.other = self.corpus_data.loc[
-            lambda df: (df.up_votes + df.down_votes) <= 1, :
+            lambda df: (df.up_votes + df.down_votes) <= 1
+            | (df.up_votes == df.down_votes), :
         ]
         self.validated = self.corpus_data.loc[
             lambda df: (df.up_votes + df.down_votes > 1)
@@ -68,7 +69,7 @@ class Corpus:
         ]
         self.invalidated = self.corpus_data.loc[
             lambda df: (df.up_votes + df.down_votes > 1)
-            & (df.up_votes <= df.down_votes),
+            & (df.up_votes < df.down_votes),
             :,
         ]
 
