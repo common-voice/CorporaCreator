@@ -55,9 +55,9 @@ class Corpora:
 
         for locale in locales:
             _logger.info("Selecting %s corpus data..." % locale)
-            corpus_data = corpora_data.loc[
-                lambda df: df.locale == locale,
-                [
+
+            corpus_data = corpora_data.reindex(
+                columns=[
                     "client_id",
                     "path",
                     "sentence",
@@ -66,8 +66,12 @@ class Corpora:
                     "age",
                     "gender",
                     "accent",
-                ],
-            ]
+                    "locale"
+                ]
+            )
+
+            corpus_data = corpus_data.loc[lambda df: df.locale == locale]
+
             _logger.info("Selected %s corpus data." % locale)
             _logger.info("Creating %s corpus..." % locale)
             corpus = Corpus(self.args, locale, corpus_data)
