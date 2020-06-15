@@ -87,27 +87,28 @@ class Corpus:
         validated = validated.drop(columns="user_sentence_count")
         self.validated = self.validated.drop(columns="user_sentence_count")
 
+        train = pd.DataFrame(columns=validated.columns)
+        dev = pd.DataFrame(columns=validated.columns)
+        test = pd.DataFrame(columns=validated.columns)
+
         if (len(validated) > 0):
             # Determine train, dev, and test sizes
             train_size, dev_size, test_size = self._calculate_data_set_sizes(len(validated))
             # Split into train, dev, and test datasets
             continous_client_index, uniques = pd.factorize(validated["client_id"])
             validated["continous_client_index"] = continous_client_index
-            train = pd.DataFrame(columns=validated.columns)
-            dev = pd.DataFrame(columns=validated.columns)
-            test = pd.DataFrame(columns=validated.columns)
 
             for i in range(max(continous_client_index), -1, -1):
                 if len(test) + len(validated[validated["continous_client_index"] == i]) <= test_size:
-                    test = pd.concat([test, validated[validated["continous_client_index"] == i]])
+                    test = pd.concat([test, validated[validated["continous_client_index"] == i]], sort=True)
                 elif len(dev) + len(validated[validated["continous_client_index"] == i]) <= dev_size:
-                    dev = pd.concat([dev, validated[validated["continous_client_index"] == i]])
+                    dev = pd.concat([dev, validated[validated["continous_client_index"] == i]], sort=True)
                 else:
-                    train = pd.concat([train, validated[validated["continous_client_index"] == i]])
+                    train = pd.concat([train, validated[validated["continous_client_index"] == i]], sort=True)
 
-            self.train = train.drop(columns="continous_client_index")
-            self.dev = dev.drop(columns="continous_client_index")
-            self.test = test[:train_size].drop(columns="continous_client_index")
+        self.train = train.drop(columns="continous_client_index", errors="ignore")
+        self.dev = dev.drop(columns="continous_client_index", errors="ignore")
+        self.test = test[:train_size].drop(columns="continous_client_index", errors="ignore")
 
     def _calculate_data_set_sizes(self, total_size):
         # Find maximum size for the training data set in accord with sample theory
@@ -137,10 +138,8 @@ class Corpus:
 
     def _save(self, directory, dataset):
         path = os.path.join(directory, dataset + ".tsv")
-        try:
-            dataframe = getattr(self, dataset)
-            dataframe.to_csv(
-                path, sep="\t", header=True, index=False, encoding="utf-8", escapechar='\\', quoting=csv.QUOTE_NONE
-            )
-        except AttributeError:
-            _logger.error(AttributeError)
+
+        dataframe = getattr(self, dataset)
+        dataframe.to_csv(
+            path, sep="\t", header=True, index=False, encoding="utf-8", escapechar='\\', quoting=csv.QUOTE_NONE
+        )
