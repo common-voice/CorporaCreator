@@ -11,9 +11,9 @@ def cy(client_id, sentence):
     # TODO: geiriau Saesneg / English inspired/pronunced words:
     # wallace, celsius, ddiesel, wicipedia, william, chiswell, f., h.
 
-    sentence = sentence.replace("’", "'") # fix apostrophes
+    sentence = sentence.replace("’", "'")  # fix apostrophes
     sentence = sentence.replace("wwna", "wna")
     sentence = sentence.replace(" siwr ", " siŵr ")
-    sentence = sentence.replace("\\tungellog"," ungellog")
-        
+    sentence = sentence.replace("\\tungellog", " ungellog")
+
     return sentence
