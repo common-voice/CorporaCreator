@@ -58,17 +58,26 @@ class Corpus:
         return pd.Series([sentence, up_votes, down_votes])
 
     def _partition_corpus_data(self):
+        # If there are < 2 votes, or 2 opposing votes
+        # there is not enough information to make a determination
         self.other = self.corpus_data.loc[
-            lambda df: (df.up_votes + df.down_votes) <= 1, :
+            lambda df: (df.up_votes + df.down_votes <= 1)
+            | ((df.up_votes == 1) & (df.down_votes == 1)), :
         ]
+        # If there are 2+ votes, and up_votes > down_votes, clip is valid
         self.validated = self.corpus_data.loc[
             lambda df: (df.up_votes + df.down_votes > 1)
             & (df.up_votes > df.down_votes),
             :,
         ]
+        # If there are 2+ votes, and down_votes > up_votes, clip is invalid
+        # If there are 3+ votes, and up_votes == down_votes, opinions
+        # are diverging too much to be relied upon, and clip is invalid
         self.invalidated = self.corpus_data.loc[
             lambda df: (df.up_votes + df.down_votes > 1)
-            & (df.up_votes <= df.down_votes),
+            & (df.up_votes < df.down_votes)
+            | ((df.up_votes == df.down_votes)
+                & (df.up_votes + df.down_votes > 2)),
             :,
         ]
 
