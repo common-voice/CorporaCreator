@@ -74,8 +74,8 @@ class Corpus:
         # If there are 3+ votes, and up_votes == down_votes, opinions
         # are diverging too much to be relied upon, and clip is invalid
         self.invalidated = self.corpus_data.loc[
-            lambda df: (df.up_votes + df.down_votes > 1)
-            & (df.up_votes < df.down_votes)
+            lambda df: ((df.up_votes + df.down_votes > 1)
+                & (df.up_votes < df.down_votes))
             | ((df.up_votes == df.down_votes)
                 & (df.up_votes + df.down_votes > 2)),
             :,
