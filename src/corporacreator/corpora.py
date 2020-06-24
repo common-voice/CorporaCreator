@@ -66,7 +66,8 @@ class Corpora:
                     "age",
                     "gender",
                     "accent",
-                    "locale"
+                    "locale",
+                    "segment"
                 ]
             )
 
