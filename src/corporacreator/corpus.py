@@ -96,9 +96,12 @@ class Corpus:
         validated = validated.drop(columns="user_sentence_count")
         self.validated = self.validated.drop(columns="user_sentence_count")
 
+
         train = pd.DataFrame(columns=validated.columns)
         dev = pd.DataFrame(columns=validated.columns)
         test = pd.DataFrame(columns=validated.columns)
+
+        train_size = dev_size = test_size = 0
 
         if (len(validated) > 0):
             # Determine train, dev, and test sizes
@@ -109,11 +112,11 @@ class Corpus:
 
             for i in range(max(continous_client_index), -1, -1):
                 if len(test) + len(validated[validated["continous_client_index"] == i]) <= test_size:
-                    test = pd.concat([test, validated[validated["continous_client_index"] == i]], sort=True)
+                    test = pd.concat([test, validated[validated["continous_client_index"] == i]], sort=False)
                 elif len(dev) + len(validated[validated["continous_client_index"] == i]) <= dev_size:
-                    dev = pd.concat([dev, validated[validated["continous_client_index"] == i]], sort=True)
+                    dev = pd.concat([dev, validated[validated["continous_client_index"] == i]], sort=False)
                 else:
-                    train = pd.concat([train, validated[validated["continous_client_index"] == i]], sort=True)
+                    train = pd.concat([train, validated[validated["continous_client_index"] == i]], sort=False)
 
         self.train = train.drop(columns="continous_client_index", errors="ignore")
         self.dev = dev.drop(columns="continous_client_index", errors="ignore")

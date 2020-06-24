@@ -13,7 +13,7 @@ _logger = logging.getLogger(__name__)
 
 
 def common_wrapper(sentence, up_votes, down_votes):
-    is_valid, sentence = common(sentence)
+    is_valid, sentence = common(str(sentence))
     if is_valid is False:
         up_votes = 0
         down_votes = 2
