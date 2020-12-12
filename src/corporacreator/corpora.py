@@ -2,8 +2,10 @@ import os
 import csv
 import logging
 
-import swifter
+os.environ["MODIN_ENGINE"] = "dask"
+
 import pandas as pd
+import swifter
 
 from corporacreator import Corpus
 from corporacreator.preprocessors import common

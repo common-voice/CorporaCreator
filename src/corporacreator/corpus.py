@@ -2,11 +2,13 @@ import os
 import csv
 import logging
 
+os.environ["MODIN_ENGINE"] = "dask"
+
 import corporacreator
 import corporacreator.preprocessors as preprocessors
 
-import swifter
 import pandas as pd
+import swifter
 
 _logger = logging.getLogger(__name__)
 
