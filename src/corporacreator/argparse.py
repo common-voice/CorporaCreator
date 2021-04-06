@@ -83,7 +83,7 @@ def parse_args(args):
     parser.add_argument(
         "-s",
         "--duplicate-sentence-count",
-        default=1,
+        default=0,
         required=False,
         type=_check_positive,
         help="Maximum number of times a sentence can appear in a corpus.",
