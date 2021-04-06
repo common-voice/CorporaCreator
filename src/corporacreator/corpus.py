@@ -90,7 +90,10 @@ class Corpus:
             speaker_counts.set_index("client_id"), on="client_id"
         )
         self.validated = self.validated.sort_values(["user_sentence_count", "client_id"])
-        validated = self.validated.groupby("sentence").head(self.args.duplicate_sentence_count)
+        if self.args.duplicate_sentence_count == 0:
+            validated = self.validated.groupby("sentence")
+        else:
+            validated = self.validated.groupby("sentence").head(self.args.duplicate_sentence_count)
 
         validated = validated.sort_values(["user_sentence_count", "client_id"], ascending=False)
         validated = validated.drop(columns="user_sentence_count")
