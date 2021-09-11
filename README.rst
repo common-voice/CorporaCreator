@@ -213,7 +213,7 @@ what you have to be careful about, and which is a complexity that this simple ex
 Abbreviations
 `````````````
 
-Suppose you found that one, or more English sentences used the abbreviation "STT" for "speech-to-text". Some people may have read "STT" as the letters "S T T". However, some may have known the abbreviation and read this as "speech-to-text". To determine which was done you have to head the audio for each reading and write code that handles each contributor individually.
+Suppose you found that one, or more English sentences used the abbreviation "STT" for "speech-to-text". Some people may have read "STT" as the letters "S T T". However, some may have known the abbreviation and read this as "speech-to-text". To determine which was done you have to hear the audio for each reading and write code that handles each contributor individually.
 
 One could do this as follows:
 
