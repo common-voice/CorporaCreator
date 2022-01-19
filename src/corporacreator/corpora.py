@@ -65,7 +65,7 @@ class Corpora:
                     "down_votes",
                     "age",
                     "gender",
-                    "accent",
+                    "accents",
                     "locale",
                     "segment"
                 ]
