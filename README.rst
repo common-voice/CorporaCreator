@@ -107,6 +107,7 @@ The ``clips.tsv`` file is a `tab separated file`_ containing a dump of the raw d
 6) ``age`` - The age range of the contributor, if the contributor reported it
 7) ``gender`` - The gender of the contributor, if the contributor reported it
 8) ``accents`` - The accent of the contributor, if the contributor reported it
+8) ``variant`` - The variant of the language that contributor speaks, if the contributor reported it
 9) ``locale`` - The locale describing the language the contributor was reading
 10) ``bucket`` - The "bucket" (train, dev, or test) the clip is currently assigned to
 
