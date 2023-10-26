@@ -90,7 +90,7 @@ class Corpora:
             parse_dates=False,
             engine="python",
             encoding="utf-8",
-            error_bad_lines=False,
+            on_bad_lines="warn",
             quotechar='"',
             quoting=csv.QUOTE_NONE,
         )
