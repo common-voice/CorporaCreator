@@ -107,11 +107,11 @@ The ``clips.tsv`` file is a `tab separated file`_ containing a dump of the raw d
 6) ``age`` - The age range of the contributor, if the contributor reported it
 7) ``gender`` - The gender of the contributor, if the contributor reported it
 8) ``accents`` - The accent of the contributor, if the contributor reported it
-8) ``variant`` - The variant of the language that contributor speaks, if the contributor reported it
-9) ``locale`` - The locale describing the language the contributor was reading
-10) ``segment`` - Shows whether the sentence belongs to a specific segment
-11) ``sentence_domain`` - The domain the sentence belongs to
-12) ``bucket`` - The "bucket" (train, dev, or test) the clip is currently assigned to
+9) ``variant`` - The variant of the language that contributor speaks, if the contributor reported it
+10) ``locale`` - The locale describing the language the contributor was reading
+11) ``segment`` - Shows whether the sentence belongs to a specific segment
+12) ``sentence_domain`` - The domain the sentence belongs to
+13) ``bucket`` - The "bucket" (train, dev, or test) the clip is currently assigned to
 
 Our problem is that data in the column ``sentence`` needs to be cleaned, as there are various problems with the data in the ``sentence`` column. For example, some sentences contain HTML fragments. Some contain spelling errors. Some contain digits, e.g. "Room 4025" that allow for many valid readings. Some contain errors which we at Mozilla are not even aware of.
 
