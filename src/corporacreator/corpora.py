@@ -68,7 +68,8 @@ class Corpora:
                     "accents",
                     "variant",
                     "locale",
-                    "segment"
+                    "segment",
+                    "sentence_domain"
                 ]
             )
 
