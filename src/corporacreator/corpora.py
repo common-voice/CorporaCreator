@@ -60,7 +60,9 @@ class Corpora:
                 columns=[
                     "client_id",
                     "path",
+                    "sentence_id",
                     "sentence",
+                    "sentence_domain"
                     "up_votes",
                     "down_votes",
                     "age",
@@ -69,7 +71,6 @@ class Corpora:
                     "variant",
                     "locale",
                     "segment",
-                    "sentence_domain"
                 ]
             )
 
