@@ -62,7 +62,7 @@ class Corpora:
                     "path",
                     "sentence_id",
                     "sentence",
-                    "sentence_domain"
+                    "sentence_domain",
                     "up_votes",
                     "down_votes",
                     "age",
