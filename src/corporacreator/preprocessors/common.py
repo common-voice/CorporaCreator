@@ -1,4 +1,5 @@
 import re
+import regex
 import unicodedata
 
 from urllib.parse import unquote
@@ -6,9 +7,17 @@ from html.parser import HTMLParser
 
 
 RE_DIGITS = re.compile('\d')
+QUESTION_BEFORE_LOWERCASE = regex.compile(r'\?\p{Ll}')
+
 
 def _has_digit(sentence):
     return RE_DIGITS.search(sentence)
+
+
+def _has_question_in_middle(sentence):
+    if QUESTION_BEFORE_LOWERCASE.search(sentence):
+        return True
+    return False
 
 
 class _HTMLStripper(HTMLParser):
@@ -92,5 +101,8 @@ def common(sentence):
         is_valid = False
     # If the sentence is blank reject it
     if not sentence.strip():
+        is_valid = False
+    # If sentence has question mark before a lowercase letter it is most likely a case of broken sentence encoding
+    if _has_question_in_middle(sentence):
         is_valid = False
     return (is_valid, sentence)
