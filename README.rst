@@ -4,13 +4,11 @@ CorporaCreator
 
 This is a command line tool to create Common Voice corpora.
 
-.. contents:: Table of Contents
-
 
 Installation
-===========
+=============
 
-After checking this repo out one installs the corresponding python package as follows
+After checking this repo out one installs the corresponding Python package as follows
 
 ``CorporaCreator$ python3 setup.py install``
 
@@ -25,7 +23,7 @@ Given the ``clips.tsv`` file dumped from the Common Voice database, you can crea
 
 This will create the corpora in the directory ``corpora`` from the ``clips.tsv`` file.
 
-If you would like to just create corpora for a some language(s), you can pass the ``--langs`` flag as follows:
+If you would like to just create corpora for some language(s), you can pass the ``--langs`` flag as follows:
 
 ``CorporaCreator$ create-corpora -d corpora -f clips.tsv --langs en fr``
 
@@ -97,7 +95,7 @@ The purpose of the ``create-corpora`` command line tool is to provide a jumping-
 Cleaning Sentences
 ------------------
 
-The ``clips.tsv`` file is a `tab separated file`_ containing a dump of the raw data from Common Voice with the following columns:
+The ``clips.tsv`` file is a `tab-separated file`_ containing a dump of the raw data from Common Voice with the following columns:
 
 1) ``client_id`` - A unique identifier for the contributor that was randomly generated when the contributor joined
 2) ``path`` - The path to the audio file containing the contribution
@@ -118,7 +116,7 @@ Our problem is that data in the column ``sentence`` needs to be cleaned, as ther
 What Needs to be Cleaned?
 `````````````````````````
 
-To actually see what needs to be cleaned first hand, the best thing to do is to run ``create-corpora`` as suggested above:
+To actually see what needs to be cleaned firsthand, the best thing to do is to run ``create-corpora`` as suggested above:
 
 ``CorporaCreator$ create-corpora -d corpora -f clips.tsv``
 
@@ -149,7 +147,7 @@ This method is input the sentence to clean, cleans the sentence in a language in
 
 If the sentence is not able to be cleaned, e.g. it consisted only of HTML fragments, this method can return is_valid set to False.
 
-Currently `common.py`_ decodes any URL encoded elements of sentence, removes any HTML tags in a sentence, removes any non-printable characters in a sentence, and marks as invalid any sentence containing digits, in that order. (For the details refer to `common.py`_ .) This seems to catch most language independent problems, but if you see more, please open an issue or make a pull request.
+Currently, `common.py`_ decodes any URL encoded elements of a sentence, removes any HTML tags in a sentence, removes any non-printable characters in a sentence, and marks as invalid any sentence containing digits, in that order. (For the details refer to `common.py`_ .) This seems to catch most language independent problems, but if you see more, please open an issue or make a pull request.
 
 
 Language Dependent Cleaning
@@ -182,7 +180,7 @@ Language Independent vs Dependent Cleaning
 
 Of note is that in the language dependent case the method that does the cleaning takes not only the sentence but also the client_id of the contributor who read the sentence. In the language independent case this client_id was not present. However, for the language dependent case it's unfortunately required.
 
-A sentence may contain text which is able to be read in many different, but valid, ways. For example, the sentence "I am in room 4025." can be validly read as "I am in room four oh two five". Equivalently, a valid reading is: "I am in room four zero two five". There are also other valid readings: "I am in room forty twenty five.", "I am in room four thousand twenty five."... To actually determine which of these readings a particular contributor gave, you have to listen to the audio, determine what they said, then replace the digits with text reflecting the contributor's reading, returning this cleaned sentence.
+A sentence may contain text which is able to be read in many different but valid ways. For example, the sentence "I am in room 4025." can be validly read as "I am in room four oh two five". Equivalently, a valid reading is: "I am in room four zero two five". There are also other valid readings: "I am in room forty twenty five.", "I am in room four thousand twenty five."... To actually determine which of these readings a particular contributor gave, you have to listen to the audio, determine what they said, then replace the digits with text reflecting the contributor's reading, returning this cleaned sentence.
 
 
 Contributing Code
