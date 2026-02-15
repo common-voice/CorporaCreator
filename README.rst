@@ -7,12 +7,70 @@ This is a command line tool to create Common Voice corpora.
 .. contents:: Table of Contents
 
 
+Version Information
+===================
+
+**Current Version: 1.4.0** (Python 3.12+ required)
+
+This version has been modernized for Python 3.12+ with:
+
+- Modern packaging using ``pyproject.toml`` (PEP 621)
+- Replaced deprecated ``pkg_resources`` with ``importlib.metadata``
+- Updated dependencies (pandas>=2.0, swifter>=1.0)
+- Improved type hints and static analysis support
+
+Using the Legacy Version (Python 3.6-3.11)
+-------------------------------------------
+
+If you need to use the older version (v1.3.0) that supports Python 3.6-3.11::
+
+    git clone --depth 1 -b release-v1.3.0 https://github.com/common-voice/CorporaCreator.git
+    cd CorporaCreator
+    python3 setup.py install
+
+
+Requirements
+============
+
+- **Python 3.12 or higher**
+- pandas >= 2.0, < 3.0
+- swifter >= 1.0
+
+
 Installation
-===========
+============
 
-After checking this repo out one installs the corresponding python package as follows
+Recommended: Using a Virtual Environment
+-----------------------------------------
 
-``CorporaCreator$ python3 setup.py install``
+For Python 3.12+, it's recommended to use a virtual environment::
+
+    # Clone the repository
+    git clone https://github.com/common-voice/CorporaCreator.git
+    cd CorporaCreator
+
+    # Create and activate virtual environment
+    python3 -m venv .venv
+    source .venv/bin/activate  # On Linux/Mac
+    # .venv\Scripts\activate  # On Windows
+
+    # Install the package
+    pip install -e .
+
+    # Or install with development tools
+    pip install -e ".[testing,dev]"
+
+
+Direct Installation
+-------------------
+
+If you have ``pipx`` installed (recommended for system-wide CLI tools)::
+
+    pipx install git+https://github.com/common-voice/CorporaCreator.git
+
+Or using pip with ``--user`` flag::
+
+    pip install --user git+https://github.com/common-voice/CorporaCreator.git
 
 
 Usage
@@ -31,9 +89,9 @@ If you would like to just create corpora for a some language(s), you can pass th
 
 This will create the corpora only for English and French.
 
-Each created corpus will contain the files ``valid.tsv``, containing the validated clips; ``invalid.tsv``, containing the invalidated clips; and ``other.tsv``, containing clips that don't have sufficient votes to be considered valid or invalid. In addition it will contain the files ``train.tsv``, the valid clips in the training set; ``dev.tsv``, the valid clips in the validation set; and ``test.tsv``, the valid clips in test set.
+Each created corpus will contain the files ``validated.tsv``, containing the validated clips; ``invalidated.tsv``, containing the invalidated clips; and ``other.tsv``, containing clips that don't have sufficient votes to be considered valid or invalid. In addition it will contain the files ``train.tsv``, the valid clips in the training set; ``dev.tsv``, the valid clips in the validation set; and ``test.tsv``, the valid clips in test set.
 
-The split of ``valid.tsv`` into ``train.tsv``, ``dev.tsv``, and ``test.tsv`` is done such that the number of clips in ``dev.tsv`` or ``test.tsv`` is a "statistically significant" sample relataive to the number of clips in ``train.tsv``. More specificially, if the population size is the number of clips in ``train.tsv``, then the number of clips in ``dev.tsv`` or ``test.tsv`` is the sample size required for a confidence level of 99% and a margin of error of 1% for the ``train.tsv`` population size.
+The split of ``validated.tsv`` into ``train.tsv``, ``dev.tsv``, and ``test.tsv`` is done such that the number of clips in ``dev.tsv`` or ``test.tsv`` is a "statistically significant" sample relataive to the number of clips in ``train.tsv``. More specificially, if the population size is the number of clips in ``train.tsv``, then the number of clips in ``dev.tsv`` or ``test.tsv`` is the sample size required for a confidence level of 99% and a margin of error of 1% for the ``train.tsv`` population size.
 
 By default no sentence occurs more than once in ``train.tsv``, ``dev.tsv``, and ``test.tsv``. However, one can relax this constraint using the ``-s`` command line parameter. The value of ``-s`` is the number of repeats allows for a sentence. So, for example, if one wanted to allow for a sentence to occur 3 times in a corpus, then one could use
 
@@ -45,42 +103,42 @@ With or without the use of the ``-s`` command line parameter, the result of runn
     corpora
     ├── br
     │   ├── dev.tsv
-    │   ├── invalid.tsv
+    │   ├── invalidated.tsv
     │   ├── other.tsv
     │   ├── test.tsv
     │   ├── train.tsv
-    │   └── valid.tsv
+    │   └── validated.tsv
     ├── ca
     │   ├── dev.tsv
-    │   ├── invalid.tsv
+    │   ├── invalidated.tsv
     │   ├── other.tsv
     │   ├── test.tsv
     │   ├── train.tsv
-    │   └── valid.tsv
+    │   └── validated.tsv
     ├── cnh
     │   ├── dev.tsv
-    │   ├── invalid.tsv
+    │   ├── invalidated.tsv
     │   ├── other.tsv
     │   ├── test.tsv
     │   ├── train.tsv
-    │   └── valid.tsv
+    │   └── validated.tsv
     .
     .
     .
     ├── tt
     │   ├── dev.tsv
-    │   ├── invalid.tsv
+    │   ├── invalidated.tsv
     │   ├── other.tsv
     │   ├── test.tsv
     │   ├── train.tsv
-    │   └── valid.tsv
+    │   └── validated.tsv
     └── zh-TW
         ├── dev.tsv
-        ├── invalid.tsv
+        ├── invalidated.tsv
         ├── other.tsv
         ├── test.tsv
         ├── train.tsv
-        └── valid.tsv
+        └── validated.tsv
     
     19 directories, 114 files
 
@@ -111,7 +169,7 @@ The ``clips.tsv`` file is a `tab separated file`_ containing a dump of the raw d
 10) ``locale`` - The locale describing the language the contributor was reading
 11) ``segment`` - Shows whether the sentence belongs to a specific segment
 12) ``sentence_domain`` - The domain the sentence belongs to
-13) ``bucket`` - The "bucket" (train, dev, or test) the clip is currently assigned to
+13) Deprecated: ``bucket`` - The "bucket" (train, dev, or test) the clip is currently assigned to
 
 Our problem is that data in the column ``sentence`` needs to be cleaned, as there are various problems with the data in the ``sentence`` column. For example, some sentences contain HTML fragments. Some contain spelling errors. Some contain digits, e.g. "Room 4025" that allow for many valid readings. Some contain errors which we at Mozilla are not even aware of.
 
@@ -122,7 +180,7 @@ To actually see what needs to be cleaned first hand, the best thing to do is to 
 
 ``CorporaCreator$ create-corpora -d corpora -f clips.tsv``
 
-which will create the corpora in the directory ``corpora`` from the ``clips.tsv`` file. Then examine, for English say, the file ``corpora/en/valid.tsv`` to see which sentences there need cleaning. For other languages you would examine the corresponding file, e.g. for French it would be ``corpora/fr/valid.tsv``.
+which will create the corpora in the directory ``corpora`` from the ``clips.tsv`` file. Then examine, for English say, the file ``corpora/en/validated.tsv`` to see which sentences there need cleaning. For other languages you would examine the corresponding file, e.g. for French it would be ``corpora/fr/validated.tsv``.
 
 Language Independent Cleaning
 ``````````````````````````````
@@ -271,5 +329,60 @@ To actually hear the audio, you have to request the audio from Mozilla. (See the
 As in the case of abbreviations, you can hear the audio for a given sentence and client_id pair by finding the row corresponding to the sentence + client_id pair in ``clips.tsv``, finding the ``path`` in that row, then playing the file corresponding to the row's ``path`` in the downloaded audio.
 
 .. _tab separated file: https://en.wikipedia.org/wiki/Tab-separated_values
-.. _common.py: https://github.com/mozilla/CorporaCreator/blob/master/src/corporacreator/preprocessors/common.py
-.. _en.py: https://github.com/mozilla/CorporaCreator/blob/master/src/corporacreator/preprocessors/en.py
+.. _common.py: https://github.com/common-voice/CorporaCreator/blob/master/src/corporacreator/preprocessors/common.py
+.. _en.py: https://github.com/common-voice/CorporaCreator/blob/master/src/corporacreator/preprocessors/en.py
+
+
+Development
+===========
+
+Setting Up Development Environment
+-----------------------------------
+
+To contribute to CorporaCreator::
+
+    # Clone and setup
+    git clone https://github.com/common-voice/CorporaCreator.git
+    cd CorporaCreator
+    
+    # Create virtual environment
+    python3 -m venv .venv
+    source .venv/bin/activate
+    
+    # Install with development dependencies
+    pip install -e ".[testing,dev]"
+    
+    # Run tests
+    pytest
+    
+    # Run linting
+    ruff check .
+    mypy src/
+
+
+Running Tests
+-------------
+
+Run the test suite::
+
+    pytest
+    
+    # With coverage report
+    pytest --cov=corporacreator --cov-report=html
+
+
+Migration Notes
+===============
+
+From v1.3.0 to v1.4.0
+---------------------
+
+- **Python 3.12+ is now required** (previously supported 3.6+)
+- Installation now uses ``pip install -e .`` instead of ``python setup.py install``
+- ``pkg_resources`` has been replaced with ``importlib.metadata`` (no user-facing changes)
+- Virtual environments are now recommended for all installations
+
+License
+=======
+
+Mozilla Public License Version 2.0
