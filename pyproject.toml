@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "CorporaCreator"
+version = "1.4.0"
+description = "Command line tool to create Common Voice corpora."
+readme = "README.rst"
+requires-python = ">=3.12"
+license = "MPL-2.0"
+license-files = ["LICENSE.txt"]
+authors = [{ name = "kdavis-mozilla", email = "kdavis@mozilla.com" }]
+urls = { Homepage = "https://github.com/common-voice/CorporaCreator" }
+
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3 :: Only",
+  "Operating System :: OS Independent",
+]
+
+dependencies = ["pandas>=2.0,<3.0", "swifter>=1.0"]
+
+[project.optional-dependencies]
+testing = ["pytest>=7.0", "pytest-cov>=4.0"]
+dev = ["types-setuptools", "mypy", "ruff", "packaging>=23.0"]
+docs = ["sphinx>=4.0", "packaging>=23.0"]
+
+[project.scripts]
+create-corpora = "corporacreator.tool:run"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["tests"]
+
+[tool.setuptools.exclude-package-data]
+# Add if you want to exclude data for specific packages
+# corporacreator = ["*.txt"]
+
+[tool.pytest.ini_options]
+addopts = "--cov corporacreator --cov-report term-missing --verbose"
+norecursedirs = ["dist", "build", ".tox"]
+testpaths = ["tests"]
+
+[tool.flake8]
+exclude = [".tox", "build", "dist", ".eggs", "docs/conf.py"]
+
+[tool.setuptools.dynamic]
+# Uncomment if you want to use SCM versioning or similar
+# version = { attr = "corporacreator.__version__" }
+
+[tool.sphinx]
+source-dir = "docs"
+build-dir = "docs/_build"

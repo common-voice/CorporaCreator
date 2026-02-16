@@ -1,17 +1,14 @@
 import logging
 import argparse
-
-from pkg_resources import get_distribution, DistributionNotFound
+from importlib.metadata import version, PackageNotFoundError
 
 
 try:
     # Change here if project is renamed and does not equal the package name
     dist_name = "CorporaCreator"
-    __version__ = get_distribution(dist_name).version
-except DistributionNotFound:
+    __version__ = version(dist_name)
+except PackageNotFoundError:
     __version__ = "unknown"
-finally:
-    del get_distribution, DistributionNotFound
 
 
 def _check_positive(value):
@@ -70,7 +67,7 @@ def parse_args(args):
         "-l",
         "--langs",
         required=False,
-        nargs='+',
+        nargs="+",
         help="Which language(s) you want to make corpora for",
     )
     parser.add_argument(
