@@ -41,9 +41,6 @@ class Corpus:
         _logger.debug("Created %s corpora." % self.locale)
 
     def _pre_process_corpus_data(self):
-        locale_key = self.locale.replace("-", "")
-        if not hasattr(preprocessors, locale_key):
-            return
         self.corpus_data[["sentence", "up_votes", "down_votes"]] = self.corpus_data[
             ["client_id", "sentence", "up_votes", "down_votes"]
         ].swifter.apply(func=lambda arg: self._preprocessor_wrapper(*arg), axis=1)
@@ -115,7 +112,7 @@ class Corpus:
             validated["continous_client_index"] = continous_client_index
 
             # Pre-partition by speaker once (O(n)) instead of scanning per iteration (O(n²))
-            groups = dict(list(validated.groupby("continous_client_index")))
+            groups = dict(validated.groupby("continous_client_index", sort=False))
 
             train_parts, dev_parts, test_parts = [], [], []
             test_count = dev_count = 0
