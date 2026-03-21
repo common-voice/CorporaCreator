@@ -36,10 +36,14 @@ class Corpus:
         _logger.debug("Creating %s corpus..." % self.locale)
         self._pre_process_corpus_data()
         self._partition_corpus_data()
+        del self.corpus_data
         self._post_process_valid_data()
         _logger.debug("Created %s corpora." % self.locale)
 
     def _pre_process_corpus_data(self):
+        locale_key = self.locale.replace("-", "")
+        if not hasattr(preprocessors, locale_key):
+            return
         self.corpus_data[["sentence", "up_votes", "down_votes"]] = self.corpus_data[
             ["client_id", "sentence", "up_votes", "down_votes"]
         ].swifter.apply(func=lambda arg: self._preprocessor_wrapper(*arg), axis=1)
@@ -110,13 +114,27 @@ class Corpus:
             continous_client_index, uniques = pd.factorize(validated["client_id"])
             validated["continous_client_index"] = continous_client_index
 
+            # Pre-partition by speaker once (O(n)) instead of scanning per iteration (O(n²))
+            groups = dict(list(validated.groupby("continous_client_index")))
+
+            train_parts, dev_parts, test_parts = [], [], []
+            test_count = dev_count = 0
+
             for i in range(max(continous_client_index), -1, -1):
-                if len(test) + len(validated[validated["continous_client_index"] == i]) <= test_size:
-                    test = pd.concat([test, validated[validated["continous_client_index"] == i]], sort=False)
-                elif len(dev) + len(validated[validated["continous_client_index"] == i]) <= dev_size:
-                    dev = pd.concat([dev, validated[validated["continous_client_index"] == i]], sort=False)
+                speaker_data = groups[i]
+                n = len(speaker_data)
+                if test_count + n <= test_size:
+                    test_parts.append(speaker_data)
+                    test_count += n
+                elif dev_count + n <= dev_size:
+                    dev_parts.append(speaker_data)
+                    dev_count += n
                 else:
-                    train = pd.concat([train, validated[validated["continous_client_index"] == i]], sort=False)
+                    train_parts.append(speaker_data)
+
+            train = pd.concat(train_parts, sort=False) if train_parts else pd.DataFrame(columns=validated.columns)
+            dev   = pd.concat(dev_parts, sort=False)   if dev_parts   else pd.DataFrame(columns=validated.columns)
+            test  = pd.concat(test_parts, sort=False)   if test_parts  else pd.DataFrame(columns=validated.columns)
 
         self.train = train.drop(columns="continous_client_index", errors="ignore")
         self.dev = dev.drop(columns="continous_client_index", errors="ignore")
