@@ -112,7 +112,7 @@ class Corpus:
             validated["continous_client_index"] = continous_client_index
 
             # Pre-partition by speaker once (O(n)) instead of scanning per iteration (O(n²))
-            groups = dict(validated.groupby("continous_client_index", sort=False))
+            groups = {k: v for k, v in validated.groupby("continous_client_index", sort=False)}
 
             train_parts, dev_parts, test_parts = [], [], []
             test_count = dev_count = 0
