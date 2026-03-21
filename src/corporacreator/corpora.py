@@ -1,3 +1,4 @@
+import gc
 import os
 import csv
 import logging
@@ -53,7 +54,8 @@ class Corpora:
         else:
             locales = corpora_data.locale.unique()
 
-        for locale in locales:
+        num_locales = len(locales)
+        for i, locale in enumerate(locales):
             _logger.info("Selecting %s corpus data..." % locale)
 
             corpus_data = corpora_data.reindex(
@@ -79,6 +81,9 @@ class Corpora:
             _logger.info("Selected %s corpus data." % locale)
             _logger.info("Creating %s corpus..." % locale)
             corpus = Corpus(self.args, locale, corpus_data)
+            if i == num_locales - 1:
+                del corpora_data
+                gc.collect()
             corpus.create()
             _logger.info("Created %s corpus." % locale)
             self.corpora.append(corpus)
@@ -95,6 +100,16 @@ class Corpora:
             on_bad_lines="warn",
             quotechar='"',
             quoting=csv.QUOTE_NONE,
+            dtype={
+                "locale": "category",
+                "age": "category",
+                "gender": "category",
+                "accents": "category",
+                "variant": "category",
+                "segment": "category",
+                "up_votes": "int32",
+                "down_votes": "int32",
+            },
         )
         _logger.info("Parsed %d lines tsv file." % len(corpora_data))
         return corpora_data
