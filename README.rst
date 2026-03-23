@@ -10,14 +10,16 @@ This is a command line tool to create Common Voice corpora.
 Version Information
 ===================
 
-**Current Version: 1.4.0** (Python 3.12+ required)
+**Current Version: 1.4.2** (Python 3.12+ required)
 
-This version has been modernized for Python 3.12+ with:
+Changes since 1.4.0:
 
-- Modern packaging using ``pyproject.toml`` (PEP 621)
-- Replaced deprecated ``pkg_resources`` with ``importlib.metadata``
-- Updated dependencies (pandas>=2.0, swifter>=1.0)
-- Improved type hints and static analysis support
+- RAM/CPU optimizations for large datasets (category dtypes, O(n) speaker partitioning)
+- DEBUG-level resource/memory monitoring (``-vv``) for diagnosing OOM in containers
+- Reworked log formatting with ``CC-PY`` tag for bundler integration
+- Explicit ``__all__`` re-exports per PEP 484
+
+See ``CHANGELOG.rst`` for full history.
 
 Using the Legacy Version (Python 3.6-3.11)
 -------------------------------------------
@@ -374,13 +376,15 @@ Run the test suite::
 Migration Notes
 ===============
 
-From v1.3.0 to v1.4.0
+From v1.3.0 to v1.4.x
 ---------------------
 
 - **Python 3.12+ is now required** (previously supported 3.6+)
 - Installation now uses ``pip install -e .`` instead of ``python setup.py install``
 - ``pkg_resources`` has been replaced with ``importlib.metadata`` (no user-facing changes)
 - Virtual environments are now recommended for all installations
+- v1.4.1+: major RAM/CPU optimizations for large datasets
+- v1.4.2: DEBUG-level resource monitoring with ``-vv`` flag
 
 License
 =======
