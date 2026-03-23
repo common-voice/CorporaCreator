@@ -1,14 +1,15 @@
-import gc
-import os
+import argparse
 import csv
+import gc
 import logging
+import os
 
-import swifter
-import pandas as pd
+import pandas as pd  # type: ignore
+import swifter  # type: ignore # noqa: F401 -- side-effect import, patches pandas with .swifter accessor
 
 from corporacreator import Corpus
 from corporacreator.preprocessors import common
-import argparse
+from corporacreator.resources import log_resources
 
 _logger = logging.getLogger(__name__)
 
@@ -41,9 +42,11 @@ class Corpora:
         """
         _logger.info("Creating corpora...")
         corpora_data = self._parse_tsv()
+        log_resources("before swifter common_wrapper")
         corpora_data[["sentence", "up_votes", "down_votes"]] = corpora_data[
             ["sentence", "up_votes", "down_votes"]
         ].swifter.apply(func=lambda arg: common_wrapper(*arg), axis=1)
+        log_resources("after swifter common_wrapper")
         if self.args.langs:
             # check if all languages provided at command line are actually
             # in the clips.tsv file, if not, throw error
@@ -54,8 +57,7 @@ class Corpora:
         else:
             locales = corpora_data.locale.unique()
 
-        num_locales = len(locales)
-        for i, locale in enumerate(locales):
+        for locale in locales:
             _logger.info("Selecting %s corpus data..." % locale)
 
             corpus_data = corpora_data.reindex(
@@ -81,15 +83,17 @@ class Corpora:
             _logger.info("Selected %s corpus data." % locale)
             _logger.info("Creating %s corpus..." % locale)
             corpus = Corpus(self.args, locale, corpus_data)
-            if i == num_locales - 1:
-                del corpora_data
-                gc.collect()
             corpus.create()
             _logger.info("Created %s corpus." % locale)
             self.corpora.append(corpus)
+
+        del corpora_data
+        gc.collect()
+        log_resources("after gc.collect (corpora_data freed)")
         _logger.info("Created corpora.")
 
     def _parse_tsv(self):
+        log_resources("before read_csv")
         _logger.info("Parsing tsv file...")
         corpora_data = pd.read_csv(
             self.args.tsv_filename,
@@ -112,6 +116,9 @@ class Corpora:
             },
         )
         _logger.info("Parsed %d lines tsv file." % len(corpora_data))
+        if _logger.isEnabledFor(logging.DEBUG):
+            mem_mb = corpora_data.memory_usage(deep=True).sum() / 1024 / 1024
+            log_resources("after read_csv", f"{len(corpora_data)} rows, DataFrame={mem_mb:.0f}MB")
         return corpora_data
 
     def save(self, directory):

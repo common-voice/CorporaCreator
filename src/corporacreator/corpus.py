@@ -1,12 +1,13 @@
-import os
 import csv
 import logging
+import os
+
+import pandas as pd  # type: ignore
+import swifter  # type: ignore # noqa: F401 -- side-effect import, patches pandas with .swifter accessor
 
 import corporacreator
 import corporacreator.preprocessors as preprocessors
-
-import swifter
-import pandas as pd
+from corporacreator.resources import log_resources
 
 _logger = logging.getLogger(__name__)
 
@@ -33,11 +34,20 @@ class Corpus:
     def create(self):
         """Creates a :class:`corporacreator.Corpus` for `self.locale`.
         """
-        _logger.debug("Creating %s corpus..." % self.locale)
+        rows = len(self.corpus_data)
+        _logger.debug("Creating %s corpus (%d rows)..." % (self.locale, rows))
+        log_resources("before preprocess %s" % self.locale, "%d rows" % rows)
         self._pre_process_corpus_data()
+        log_resources("after preprocess %s" % self.locale)
         self._partition_corpus_data()
+        log_resources("after partition %s" % self.locale,
+                      "valid=%d invalid=%d other=%d" % (
+                          len(self.validated), len(self.invalidated), len(self.other)))
         del self.corpus_data
         self._post_process_valid_data()
+        log_resources("after split %s" % self.locale,
+                      "train=%d dev=%d test=%d" % (
+                          len(self.train), len(self.dev), len(self.test)))
         _logger.debug("Created %s corpora." % self.locale)
 
     def _pre_process_corpus_data(self):
@@ -139,6 +149,9 @@ class Corpus:
 
     def _calculate_data_set_sizes(self, total_size):
         # Find maximum size for the training data set in accord with sample theory
+        train_size = total_size
+        dev_size = 0
+        test_size = 0
         for train_size in range(total_size, 0, -1):
             calculated_sample_size = int(corporacreator.sample_size(train_size))
             if 2 * calculated_sample_size + train_size <= total_size:
