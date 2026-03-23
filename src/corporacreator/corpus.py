@@ -2,7 +2,7 @@ import csv
 import logging
 import os
 
-import pandas as pd # type: ignore
+import pandas as pd  # type: ignore
 import swifter  # type: ignore # noqa: F401 -- side-effect import, patches pandas with .swifter accessor
 
 import corporacreator

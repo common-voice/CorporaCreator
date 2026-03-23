@@ -4,7 +4,7 @@ import gc
 import logging
 import os
 
-import pandas as pd # type: ignore
+import pandas as pd  # type: ignore
 import swifter  # type: ignore # noqa: F401 -- side-effect import, patches pandas with .swifter accessor
 
 from corporacreator import Corpus
@@ -115,9 +115,10 @@ class Corpora:
                 "down_votes": "int32",
             },
         )
-        mem_mb = corpora_data.memory_usage(deep=True).sum() / 1024 / 1024
         _logger.info("Parsed %d lines tsv file." % len(corpora_data))
-        log_resources("after read_csv", f"{len(corpora_data)} rows, DataFrame={mem_mb:.0f}MB")
+        if _logger.isEnabledFor(logging.DEBUG):
+            mem_mb = corpora_data.memory_usage(deep=True).sum() / 1024 / 1024
+            log_resources("after read_csv", f"{len(corpora_data)} rows, DataFrame={mem_mb:.0f}MB")
         return corpora_data
 
     def save(self, directory):

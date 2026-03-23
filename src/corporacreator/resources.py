@@ -16,9 +16,10 @@ _logger = logging.getLogger(__name__)
 
 
 def get_memory_mb() -> dict:
-    """Returns current memory usage in MB from available sources.
+    """Returns memory usage in MB from available sources.
 
     Tries platform-specific methods in order of accuracy.
+    Note: some fallbacks (e.g. resource.getrusage) report peak RSS, not current.
     Never raises -- returns empty dict on failure so callers are safe.
     """
     result: dict = {}
@@ -52,15 +53,15 @@ def get_memory_mb() -> dict:
 
     # 3. Windows fallback -- psutil (optional dependency)
     try:
-        import psutil # type: ignore
+        import psutil  # type: ignore
         proc = psutil.Process()
         mem = proc.memory_info()
         result["rss"] = mem.rss / (1024 * 1024)
         result["vm"] = mem.vms / (1024 * 1024)
         if hasattr(mem, "peak_wset"):
-            result["peak"] = mem.peak_wset / (1024 * 1024) # type: ignore
+            result["peak"] = mem.peak_wset / (1024 * 1024)  # type: ignore
         return result
-    except (ImportError, OSError):
+    except Exception:
         pass
 
     return result
@@ -82,6 +83,8 @@ def log_resources(label: str, extra: str = "") -> None:
         label: Short description of the pipeline point (e.g. "after read_csv").
         extra: Optional extra info to append (e.g. row counts, DataFrame size).
     """
+    if not _logger.isEnabledFor(logging.DEBUG):
+        return
     mem = format_memory(get_memory_mb())
     suffix = f" | {extra}" if extra else ""
     _logger.debug("[RESOURCES] %s: %s%s", label, mem, suffix)
