@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-from .common import common as common
-from .cy import cy as cy
-from .de import de as de
-from .ky import ky as ky
+from .common import common
+from .cy import cy
+from .de import de
+from .ky import ky
+
+__all__ = ["common", "cy", "de", "ky"]

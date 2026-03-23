@@ -5,7 +5,11 @@ Used with -vv (DEBUG) to diagnose OOM kills in containerized environments.
 
 Platform support:
   - Linux/container: reads /proc/self/status (VmRSS, VmSize, VmPeak)
-  - macOS: resource.getrusage fallback (ru_maxrss in bytes)
+  - Unix fallback (macOS, Linux without /proc): uses resource.getrusage
+      * ru_maxrss is reported in kilobytes on most Linux systems
+      * ru_maxrss is reported in bytes on macOS
+    get_memory_mb() normalizes these values to megabytes using
+    platform-specific conversion (see divisor logic below).
   - Windows: psutil if available, otherwise gracefully skipped
 """
 
@@ -54,15 +58,27 @@ def get_memory_mb() -> dict:
     # 3. Windows fallback -- psutil (optional dependency)
     try:
         import psutil  # type: ignore
-        proc = psutil.Process()
-        mem = proc.memory_info()
-        result["rss"] = mem.rss / (1024 * 1024)
-        result["vm"] = mem.vms / (1024 * 1024)
-        if hasattr(mem, "peak_wset"):
-            result["peak"] = mem.peak_wset / (1024 * 1024)  # type: ignore
-        return result
-    except Exception:
-        pass
+    except ImportError:
+        if _logger.isEnabledFor(logging.DEBUG):
+            _logger.debug(
+                "psutil not available for memory inspection; skipping",
+                exc_info=True,
+            )
+    else:
+        try:
+            proc = psutil.Process()
+            mem = proc.memory_info()
+            result["rss"] = mem.rss / (1024 * 1024)
+            result["vm"] = mem.vms / (1024 * 1024)
+            if hasattr(mem, "peak_wset"):
+                result["peak"] = mem.peak_wset / (1024 * 1024)  # type: ignore
+            return result
+        except (psutil.Error, OSError):
+            if _logger.isEnabledFor(logging.DEBUG):
+                _logger.debug(
+                    "psutil-based memory inspection failed; skipping",
+                    exc_info=True,
+                )
 
     return result
 
