@@ -122,11 +122,27 @@ class Corpora:
             .select([c for c in COLUMNS])
             .collect()
         )
+        # Warn about silently skipped rows (Polars ignore_errors has no
+        # built-in warning mode, unlike pandas on_bad_lines="warn")
+        file_lines = self._count_file_lines(self.args.tsv_filename) - 1  # minus header
+        if len(df) < file_lines:
+            _logger.warning(
+                "Skipped %d malformed rows during TSV parsing", file_lines - len(df)
+            )
         _logger.info("Parsed %d lines tsv file." % len(df))
         if _logger.isEnabledFor(logging.DEBUG):
             mem_mb = df.estimated_size("mb")
             log_resources("after read_csv", "%d rows, DataFrame=%.0fMB" % (len(df), mem_mb))
         return df
+
+    @staticmethod
+    def _count_file_lines(path: str) -> int:
+        """Count newlines in a file using buffered binary read."""
+        count = 0
+        with open(path, "rb") as f:
+            for chunk in iter(lambda: f.read(1024 * 1024), b""):
+                count += chunk.count(b"\n")
+        return count
 
     def _preprocess_common(self, df: pl.DataFrame) -> pl.DataFrame:
         """Vectorized equivalent of the old swifter common_wrapper apply.

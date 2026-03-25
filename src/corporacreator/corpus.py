@@ -192,7 +192,7 @@ class Corpus:
             .agg(pl.len().alias("_n_clips"))
         )
         speaker_order = speaker_order.join(
-            speaker_clip_counts, on="client_id"
+            speaker_clip_counts, on="client_id", how="left", maintain_order="left"
         )
 
         # Assign split labels with exact v1 budget logic

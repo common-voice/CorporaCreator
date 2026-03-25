@@ -1,10 +1,8 @@
 """Shared fixtures for CorporaCreator v1.5 tests."""
 
-import os
 import types
 
 import pytest
-import polars as pl
 
 
 @pytest.fixture
