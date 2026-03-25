@@ -5,7 +5,7 @@ from urllib.parse import unquote
 from html.parser import HTMLParser
 
 
-RE_DIGITS = re.compile('\d')
+RE_DIGITS = re.compile(r'\d')
 
 def _has_digit(sentence):
     return RE_DIGITS.search(sentence)
