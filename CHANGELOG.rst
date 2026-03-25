@@ -2,6 +2,22 @@
 Changelog
 =========
 
+Version 1.5.0 (2026-03-25)
+===========================
+
+- **Polars rewrite** -- replaced ``pandas`` + ``swifter`` with ``polars>=1.0``
+- Drop-in replacement: CLI interface, TSV output, and split algorithm unchanged
+- Vectorized common preprocessing pipeline
+  (URL decode, HTML strip, unicode category filter, whitespace normalization)
+- Binary search for train/dev/test split sizes -- O(log N) vs O(N)
+- Speaker-based split via O(n) join instead of O(n²) per-speaker filtering
+- Fixed multi-locale processing bug (``del df`` inside loop)
+- Fixed test-split safety cap (was ``train_size``, now correctly ``test_size``)
+- Added Polars DataFrames based test suite
+
+  *PR:* `#134 <https://github.com/common-voice/CorporaCreator/pull/134>`_
+
+
 Version 1.4.2 (2026-03-23)
 ===========================
 

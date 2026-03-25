@@ -10,14 +10,17 @@ This is a command line tool to create Common Voice corpora.
 Version Information
 ===================
 
-**Current Version: 1.4.2** (Python 3.12+ required)
+**Current Version: 1.5.0** (Python 3.12+ required)
 
-Changes since 1.4.0:
+Changes since 1.4.x:
 
-- RAM/CPU optimizations for large datasets (category dtypes, O(n) speaker partitioning)
+- **Polars rewrite** — replaced pandas + swifter with Polars for significantly lower RAM usage and faster processing
+- Vectorized common preprocessing pipeline (URL decode, HTML strip, unicode filter, whitespace normalization)
+- Binary search for train/dev/test split sizes — O(log N) vs O(N) linear scan
+- Speaker-based split via O(n) join instead of O(n²) per-speaker filtering
+- Fixed multi-locale processing bug
 - DEBUG-level resource/memory monitoring (``-vv``) for diagnosing OOM in containers
 - Reworked log formatting with ``CC-PY`` tag for bundler integration
-- Explicit ``__all__`` re-exports per PEP 484
 
 See ``CHANGELOG.rst`` for full history.
 
@@ -35,8 +38,7 @@ Requirements
 ============
 
 - **Python 3.12 or higher**
-- pandas >= 2.0, < 3.0
-- swifter >= 1.0
+- polars >= 1.0
 
 
 Installation
@@ -375,6 +377,14 @@ Run the test suite::
 
 Migration Notes
 ===============
+
+From v1.4.x to v1.5.0
+----------------------
+
+- **pandas + swifter replaced by Polars** — ``pip install`` will pull ``polars>=1.0`` instead
+- Drop-in replacement: CLI interface, TSV output format, and split algorithm are unchanged
+- Significantly lower peak memory usage on large datasets
+- No changes to preprocessor plugin interface (``cy.py``, ``de.py``, ``ky.py`` work as before)
 
 From v1.3.0 to v1.4.x
 ---------------------
