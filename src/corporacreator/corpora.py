@@ -1,25 +1,61 @@
 import argparse
-import csv
-import gc
+import html
 import logging
 import os
+import re
+from urllib.parse import unquote
 
-import pandas as pd  # type: ignore
-import swifter  # type: ignore # noqa: F401 -- side-effect import, patches pandas with .swifter accessor
+import polars as pl
 
 from corporacreator import Corpus
-from corporacreator.preprocessors import common
 from corporacreator.resources import log_resources
 
 _logger = logging.getLogger(__name__)
 
+# Compiled regex for HTML tag stripping (used in _clean_sentence)
+_RE_HTML_TAGS = re.compile(r"<[^>]+>")
 
-def common_wrapper(sentence, up_votes, down_votes):
-    is_valid, sentence = common(str(sentence))
-    if is_valid is False:
-        up_votes = 0
-        down_votes = 2
-    return pd.Series([sentence, up_votes, down_votes])
+
+def _clean_sentence(sentence: str) -> str:
+    """Clean a single sentence: URL decode, strip HTML, strip disallowed unicode.
+
+    This is called via map_elements for the steps that require Python-level
+    processing. Whitespace normalization and validity checks are done
+    vectorized in Polars afterward.
+    """
+    sentence = str(sentence)
+    # URL decode
+    if "%" in sentence:
+        sentence = unquote(sentence)
+    # Strip HTML tags via regex
+    sentence = _RE_HTML_TAGS.sub("", sentence)
+    # Convert HTML entities (&amp; -> &, etc.)
+    if "&" in sentence:
+        sentence = html.unescape(sentence)
+    return sentence
+
+
+# Columns expected in clips.tsv (used for column pushdown on read)
+COLUMNS = [
+    "client_id",
+    "path",
+    "sentence_id",
+    "sentence",
+    "sentence_domain",
+    "up_votes",
+    "down_votes",
+    "age",
+    "gender",
+    "accents",
+    "variant",
+    "locale",
+    "segment",
+]
+
+SCHEMA_OVERRIDES = {
+    "up_votes": pl.Int32,
+    "down_votes": pl.Int32,
+}
 
 
 class Corpora:
@@ -38,88 +74,109 @@ class Corpora:
         self.corpora = []
 
     def create(self):
-        """Creates a :class:`corporacreator.Corpus` for each locale.
-        """
+        """Creates a :class:`corporacreator.Corpus` for each locale."""
         _logger.info("Creating corpora...")
-        corpora_data = self._parse_tsv()
-        log_resources("before swifter common_wrapper")
-        corpora_data[["sentence", "up_votes", "down_votes"]] = corpora_data[
-            ["sentence", "up_votes", "down_votes"]
-        ].swifter.apply(func=lambda arg: common_wrapper(*arg), axis=1)
-        log_resources("after swifter common_wrapper")
+        df = self._parse_tsv()
+        log_resources("before preprocess_common")
+        df = self._preprocess_common(df)
+        log_resources("after preprocess_common")
+
         if self.args.langs:
-            # check if all languages provided at command line are actually
-            # in the clips.tsv file, if not, throw error
-            if set(self.args.langs).issubset(set(corpora_data.locale.unique())):
-                locales = self.args.langs
-            else:
-                raise argparse.ArgumentTypeError("ERROR: You have requested languages which do not exist in clips.tsv")
+            available = set(df["locale"].unique().to_list())
+            if not set(self.args.langs).issubset(available):
+                raise argparse.ArgumentTypeError(
+                    "ERROR: You have requested languages which do not exist in clips.tsv"
+                )
+            locales = self.args.langs
         else:
-            locales = corpora_data.locale.unique()
+            locales = df["locale"].unique().to_list()
 
         for locale in locales:
             _logger.info("Selecting %s corpus data..." % locale)
-
-            corpus_data = corpora_data.reindex(
-                columns=[
-                    "client_id",
-                    "path",
-                    "sentence_id",
-                    "sentence",
-                    "sentence_domain",
-                    "up_votes",
-                    "down_votes",
-                    "age",
-                    "gender",
-                    "accents",
-                    "variant",
-                    "locale",
-                    "segment",
-                ]
-            )
-
-            corpus_data = corpus_data.loc[lambda df: df.locale == locale]
-
+            locale_df = df.filter(pl.col("locale") == locale)
             _logger.info("Selected %s corpus data." % locale)
+
             _logger.info("Creating %s corpus..." % locale)
-            corpus = Corpus(self.args, locale, corpus_data)
+            corpus = Corpus(self.args, locale, locale_df)
             corpus.create()
             _logger.info("Created %s corpus." % locale)
             self.corpora.append(corpus)
 
-        del corpora_data
-        gc.collect()
-        log_resources("after gc.collect (corpora_data freed)")
+        del df
+
+        log_resources("after all corpora created")
         _logger.info("Created corpora.")
 
-    def _parse_tsv(self):
+    def _parse_tsv(self) -> pl.DataFrame:
         log_resources("before read_csv")
         _logger.info("Parsing tsv file...")
-        corpora_data = pd.read_csv(
-            self.args.tsv_filename,
-            sep="\t",
-            parse_dates=False,
-            engine="python",
-            encoding="utf-8",
-            on_bad_lines="warn",
-            quotechar='"',
-            quoting=csv.QUOTE_NONE,
-            dtype={
-                "locale": "category",
-                "age": "category",
-                "gender": "category",
-                "accents": "category",
-                "variant": "category",
-                "segment": "category",
-                "up_votes": "int32",
-                "down_votes": "int32",
-            },
+        df = (
+            pl.scan_csv(
+                self.args.tsv_filename,
+                separator="\t",
+                encoding="utf8",
+                schema_overrides=SCHEMA_OVERRIDES,
+                ignore_errors=True,
+                quote_char=None,
+            )
+            .select([c for c in COLUMNS])
+            .collect()
         )
-        _logger.info("Parsed %d lines tsv file." % len(corpora_data))
+        # Warn about silently skipped rows (Polars ignore_errors has no
+        # built-in warning mode, unlike pandas on_bad_lines="warn")
+        file_lines = self._count_file_lines(self.args.tsv_filename) - 1  # minus header
+        if len(df) < file_lines:
+            _logger.warning(
+                "Skipped %d malformed rows during TSV parsing", file_lines - len(df)
+            )
+        _logger.info("Parsed %d lines tsv file." % len(df))
         if _logger.isEnabledFor(logging.DEBUG):
-            mem_mb = corpora_data.memory_usage(deep=True).sum() / 1024 / 1024
-            log_resources("after read_csv", f"{len(corpora_data)} rows, DataFrame={mem_mb:.0f}MB")
-        return corpora_data
+            mem_mb = df.estimated_size("mb")
+            log_resources("after read_csv", "%d rows, DataFrame=%.0fMB" % (len(df), mem_mb))
+        return df
+
+    @staticmethod
+    def _count_file_lines(path: str) -> int:
+        """Count newlines in a file using buffered binary read."""
+        count = 0
+        with open(path, "rb") as f:
+            for chunk in iter(lambda: f.read(1024 * 1024), b""):
+                count += chunk.count(b"\n")
+        return count
+
+    def _preprocess_common(self, df: pl.DataFrame) -> pl.DataFrame:
+        """Vectorized equivalent of the old swifter common_wrapper apply.
+
+        Pipeline:
+          1. URL decode + HTML strip + entity decode  (map_elements -- Python)
+          2. Strip disallowed unicode categories       (vectorized Polars regex)
+          3. Normalize whitespace                      (vectorized Polars str ops)
+          4. Validity: digits / empty                  (vectorized boolean masks)
+        """
+        s = df["sentence"].cast(pl.String)
+
+        # 1. Python-level cleaning: URL decode, HTML tags, HTML entities
+        s = s.map_elements(_clean_sentence, return_dtype=pl.String)
+
+        # 2. Strip disallowed unicode -- FULLY VECTORIZED via Polars/Rust regex
+        #    Allowed categories (matches v1 _strip_string exactly):
+        #      Letters (L), Numbers (N), Marks (M), Punctuation (P),
+        #      Symbols (S), Space Separators (Zs)
+        s = s.str.replace_all(r"[^\p{L}\p{N}\p{M}\p{P}\p{S}\p{Zs}]", "")
+
+        # 3. Normalize whitespace -- vectorized
+        s = s.str.replace_all(r"\s+", " ").str.strip_chars()
+
+        # 4. Validity masks -- fully vectorized boolean operations
+        has_digit = s.str.contains(r"\d")
+        is_empty = s.str.len_chars().eq(0)
+        is_invalid = has_digit | is_empty
+
+        return df.with_columns([
+            s.alias("sentence"),
+            pl.when(is_invalid).then(0).otherwise(pl.col("up_votes")).alias("up_votes"),
+            pl.when(is_invalid).then(2).otherwise(pl.col("down_votes")).alias("down_votes"),
+        ])
 
     def save(self, directory):
         """Saves this :class:`corporacreator.Corpora` in `directory`.

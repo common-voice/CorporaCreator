@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "CorporaCreator"
-version = "1.4.2"
+version = "1.5.0"
 description = "Command line tool to create Common Voice corpora."
 readme = "README.rst"
 requires-python = ">=3.12"
@@ -22,7 +22,7 @@ classifiers = [
   "Operating System :: OS Independent",
 ]
 
-dependencies = ["pandas>=2.0,<3.0", "swifter>=1.0"]
+dependencies = ["polars>=1.0"]
 
 [project.optional-dependencies]
 testing = ["pytest>=7.0", "pytest-cov>=4.0"]
